@@ -1,3 +1,5 @@
+# Based on https://github.com/lefticus/cpp_starter_project by lefticus (Jason Turner)
+
 cmake_minimum_required(VERSION 3.17)
 
 # Set the project name

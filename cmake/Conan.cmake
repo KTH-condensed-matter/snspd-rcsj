@@ -1,3 +1,5 @@
+# Based on https://github.com/lefticus/cpp_starter_project by lefticus (Jason Turner)
+
 macro(run_conan)
     # Download automatically, you can also just copy the conan.cmake file
     if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")

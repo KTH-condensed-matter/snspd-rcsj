@@ -1,3 +1,5 @@
+# From https://github.com/lefticus/cpp_starter_project by lefticus (Jason Turner)
+
 function(enable_sanitizers project_name)
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL
