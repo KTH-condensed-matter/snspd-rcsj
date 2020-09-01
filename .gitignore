@@ -1,0 +1,5 @@
+# Editors
+/.idea
+
+# Build files
+/cmake-build-debug

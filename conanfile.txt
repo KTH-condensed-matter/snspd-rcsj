@@ -1,0 +1,13 @@
+[generators]
+cmake
+
+[requires]
+catch2/2.11.0
+fmt/6.1.2
+spdlog/1.5.0
+boost_filesystem/1.69.0@bincrafters/stable
+boost_program_options/1.69.0@bincrafters/stable
+
+[options]
+
+[imports]
