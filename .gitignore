@@ -1,5 +1,20 @@
 # Editors
 /.idea
 
-# Build files
+# CMake and Conan
 /cmake-build-debug
+CMakeFiles
+cmake_install.cmake
+CTestTestfile.cmake
+tests_*.cmake
+Makefile
+conan*
+graph_info.json
+snspd_rcsj.cbp
+compile_commands.json
+CMakeCache.txt
+
+# Build
+/lib
+/bin
+
