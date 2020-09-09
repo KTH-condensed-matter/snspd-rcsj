@@ -1,20 +1,40 @@
 #include <iostream>
 #include "math/TridiagonalMatrix.h"
 #include "Parameters.h"
+#include "Model.h"
 
 int main() {
-  std::cout << "Hello, World!" << '\n';
 
-  using namespace snspd::math;
+  std::size_t size{10};
 
-  auto matrix = TridiagonalMatrix<double>(3);
-  matrix.fill_diagonal(TridiagonalMatrix<double>::DIAG, 1);
-  matrix.fill_diagonal(TridiagonalMatrix<double>::UPPER, 0);
-  matrix.fill_diagonal(TridiagonalMatrix<double>::LOWER, 0);
+  snspd::Parameters params {
+      size,
+      0.01,
+      1.0,
+      1,
+      0.0,
+      0.0,
+      0.5,
+      std::vector<double>(size, 1.0),
+      std::vector<double>(size, 0.0),
+      std::vector<double>(size, 0.0),
+      std::vector<double>(size, 0.0)
+  };
 
-  std::cout << matrix.get_diagonal(TridiagonalMatrix<double>::DIAG).at(0) << '\n';
+  std::size_t multiplier = params.size;
+  double arcsin_bias_current_ratio = asin(fmin(params.ib, 1.0));
+  for (auto &value: params.x) {
+    value = static_cast<double>(multiplier--) * arcsin_bias_current_ratio;
+  }
 
-  auto matrix2 = 2 * matrix;
+  snspd::Model model(params);
+
+
+  for (std::size_t i = 0; i < 1000000; ++i) {
+    model.run();
+  }
+
+  std::cout << params << '\n';
 
   return 0;
 }

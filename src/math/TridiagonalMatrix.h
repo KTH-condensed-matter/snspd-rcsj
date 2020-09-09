@@ -3,7 +3,9 @@
 
 #include <vector>
 #include <stdexcept>
+#include <cmath>
 #include "TridiagonalLuMatrix.h"
+#include "VectorOperations.h"
 
 namespace snspd::math {
 
@@ -39,6 +41,10 @@ namespace snspd::math {
         m_upper(std::move(upper)),
         m_lower(std::move(lower)) {
 
+    }
+
+    static TridiagonalMatrix<T> eye(std::size_t size) {
+      return TridiagonalMatrix(std::vector<T>(size, 1.0), std::vector<T>(size - 1), std::vector<T>(size - 1));
     }
 
     // Get the size of the matrix
@@ -109,6 +115,16 @@ namespace snspd::math {
       }
 
       return TridiagonalLuMatrix<T>(lu_upper, lu_upper_diag_inv, lu_lower);
+    }
+
+    // Compute the Frobenius norm squared of the matrix
+    [[nodiscard]] double norm_squared() const {
+      return math::norm_squared(m_diagonal) + math::norm_squared(m_upper) + math::norm_squared(m_lower);
+    }
+
+    // Compute the Frobenius norm of the matrix
+    [[nodiscard]] double norm() const {
+      return std::sqrt(norm_squared());
     }
 
     // Allow matrix addition

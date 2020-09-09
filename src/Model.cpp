@@ -1,14 +1,26 @@
 #include <algorithm>
 #include <cmath>
+#include <fmt/ranges.h>
 #include "Model.h"
+
 #include "math/TridiagonalLuMatrix.h"
 #include "math/VectorOperations.h"
 
 void snspd::Model::run() {
-  math::TridiagonalMatrix<double> alpha = generate_alpha_matrix(m_param);
 
-  math::TridiagonalLuMatrix<double> mass_alpha = ((m_param.dt / 2) * alpha + m_mass).lu_factorize();
+  using namespace snspd::math;
 
+  // Get alpha
+  TridiagonalMatrix<double> alpha = generate_alpha_matrix(m_param);
+
+  // Compute the mass alpha matrix and factorize it
+  TridiagonalLuMatrix<double> mass_alpha = ((m_param.dt / 2) * alpha + m_mass).lu_factorize();
+
+  // Solve the matrix system
+  auto res = mass_alpha.solve(get_force_damping(m_param, alpha));
+
+  m_param.v += res;
+  m_param.x += m_param.v * m_param.dt;
 }
 
 std::vector<double> snspd::Model::generate_rnd_vector(double amplitude, std::size_t length) {
@@ -98,9 +110,25 @@ std::vector<double> snspd::Model::get_force_damping(const snspd::Parameters &par
   std::vector<double> force(param.size);
 
   // Damping
-  std::vector<double> alpha_y = alpha * param.v;
+  std::vector<double> alpha_v = alpha * param.v;
 
-  // TODO fix force
+  // Noise
+  // {rnd(0), rnd(1) - rnd(0), ..., rnd(n) - rnd(n - 1), -rnd(n)}
+  auto rnd = generate_rnd_vector(param.nl * std::sqrt(param.dt), param.size);
+  auto noise = math::shifted_diff(rnd, rnd);
 
-  return std::vector<double>();
+  // Sine phase difference
+  // {sin(x(0)), sin(x(1) - x(0)), ..., sin(x(n) - sin(n - 1)), sin(-x(n))}
+  auto sine_diff = math::sin(math::shifted_diff(param.x, param.x));
+
+  // Set the first component
+  force.at(0) = param.dt * (param.ib + param.ic.at(0) * sine_diff.at(1) - alpha_v.at(0)) - noise.at(0);
+
+  // Set the other components
+  for (std::size_t i = 1; i < param.size; ++i) {
+    force.at(i) = param.dt * (-param.ic.at(i - 1) * sine_diff.at(i) + param.ic.at(i) * sine_diff.at(i + 1)
+                              - alpha_v.at(i)) - noise.at(i);
+  }
+
+  return force;
 }
