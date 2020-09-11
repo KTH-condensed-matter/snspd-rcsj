@@ -1,13 +1,19 @@
 #include <iostream>
+#include <spdlog/spdlog.h>
 #include "math/TridiagonalMatrix.h"
 #include "Parameters.h"
 #include "Model.h"
+#include "io/ConfigParser.h"
+#include "io/exception/FileNotFound.h"
 
 int main() {
 
+  using namespace snspd;
+
   std::size_t size{10};
 
-  snspd::Parameters params {
+  Parameters params {
+    0,
       size,
       0.01,
       1.0,
@@ -27,14 +33,26 @@ int main() {
     value = static_cast<double>(multiplier--) * arcsin_bias_current_ratio;
   }
 
-  snspd::Model model(params);
+  Model model(params);
 
+  std::size_t steps{1000};
 
-  for (std::size_t i = 0; i < 1000000; ++i) {
+  for (std::size_t i = 0; i < steps; ++i) {
     model.run();
   }
 
   std::cout << params << '\n';
+
+  // TODO implement ConfigParser
+  try {
+    io::ConfigParser config("settings.json");
+  } catch (const io::FileNotFound &e) {
+    spdlog::critical(e.what());
+    return 1;
+  } catch (const nlohmann::detail::parse_error &e) {
+    spdlog::critical(e.what());
+    return 1;
+  }
 
   return 0;
 }

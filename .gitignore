@@ -15,6 +15,7 @@ compile_commands.json
 CMakeCache.txt
 
 # Build
+/_deps
 /lib
 /bin
 

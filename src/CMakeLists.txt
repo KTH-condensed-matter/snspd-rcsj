@@ -8,3 +8,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE project_options project_warnings
         CONAN_PKG::fmt CONAN_PKG::spdlog CONAN_PKG::boost_filesystem CONAN_PKG::boost_program_options)
 
 include(cmake/AddIndicators.cmake)
+include(cmake/AddNlohmannJson.cmake)

@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <numeric>
+#include "exception/DimensionMismatch.h"
 
 namespace snspd::math {
 
@@ -13,7 +14,7 @@ namespace snspd::math {
 
     // Check that the vectors have the same length
     if (lhs.size() != rhs.size()) {
-      throw std::invalid_argument("Vectors need to have the same size to be added.");
+      throw DimensionMismatch("Vectors need to have the same size to be added.");
     }
 
     std::vector<T> res(lhs.size());
@@ -29,7 +30,7 @@ namespace snspd::math {
 
     // Check that the vectors have the same length
     if (lhs.size() != rhs.size()) {
-      throw std::invalid_argument("Vectors need to have the same size to be subtracted.");
+      throw DimensionMismatch("Vectors need to have the same size to be subtracted.");
     }
 
     std::vector<T> res(lhs.size());
@@ -44,7 +45,7 @@ namespace snspd::math {
   std::vector<T>& operator+=(std::vector<T>& lhs, const std::vector<T>& rhs) {
 
     if (lhs.size() != rhs.size()) {
-      throw std::invalid_argument("Vectors need to have the same size to be added.");
+      throw DimensionMismatch("Vectors need to have the same size to be added.");
     }
 
     std::transform(lhs.begin(), lhs.end(), rhs.begin(), lhs.begin(), std::plus<T>());
@@ -57,7 +58,7 @@ namespace snspd::math {
   std::vector<T>& operator-=(std::vector<T>& lhs, const std::vector<T>& rhs) {
 
     if (lhs.size() != rhs.size()) {
-      throw std::invalid_argument("Vectors need to have the same size to be added.");
+      throw DimensionMismatch("Vectors need to have the same size to be added.");
     }
 
     std::transform(lhs.begin(), lhs.end(), rhs.begin(), lhs.begin(), std::minus<T>());
@@ -89,7 +90,7 @@ namespace snspd::math {
   [[nodiscard]] std::vector<T> operator*(const std::vector<T> &lhs, const std::vector<T> &rhs) {
 
     if (lhs.size() != rhs.size()) {
-      throw std::invalid_argument("Vectors need to have the same length when doing component-wise multiplication.");
+      throw DimensionMismatch("Vectors need to have the same length when doing component-wise multiplication.");
     }
 
     std::vector<T> res(lhs.size());
@@ -117,7 +118,7 @@ namespace snspd::math {
   [[nodiscard]] std::vector<T> shifted_diff(const std::vector<T> &vec1, const std::vector<T> &vec2) {
 
     if (vec1.size() != vec2.size()) {
-      throw std::invalid_argument("Vectors need to have the same length to be used in shifted difference.");
+      throw DimensionMismatch("Vectors need to have the same length to be used in shifted difference.");
     }
 
     std::vector<T> res(vec1.size() + 1);

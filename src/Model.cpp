@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <cmath>
-#include <fmt/ranges.h>
 #include "Model.h"
 
 #include "math/TridiagonalLuMatrix.h"
@@ -19,8 +18,12 @@ void snspd::Model::run() {
   // Solve the matrix system
   auto res = mass_alpha.solve(get_force_damping(m_param, alpha));
 
+  // Update the voltage and phase
   m_param.v += res;
   m_param.x += m_param.v * m_param.dt;
+
+  // Update the current time step
+  ++m_param.step;
 }
 
 std::vector<double> snspd::Model::generate_rnd_vector(double amplitude, std::size_t length) {

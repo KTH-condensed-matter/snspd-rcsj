@@ -8,13 +8,15 @@
 namespace snspd {
   struct Parameters {
 
+    // The current time step
+    unsigned long step{0};
+
     // The number of segments.
-    // Cannot be changed when the simulation has started.
     const std::size_t size;
 
     const double
 
-        // Measured in units of L_K/R.
+        // Length of a time step measured in units of L_K/R.
         dt,
 
         // Quality factor R \sqrt(C / L).
@@ -57,13 +59,15 @@ namespace snspd {
   // Make it possible to print parameters
   inline std::ostream& operator<<(std::ostream &os, const snspd::Parameters &params) {
     os
-      << "Size:               "       << params.size  << '\n'
-      << "\u0394t:                 "  << params.dt    << '\n'
-      << "Quality:            "       << params.q     << '\n'
-      << "Ground capacitance: "       << params.c0    << '\n'
-      << "Cut-off voltage:    "       << params.vg    << '\n'
-      << "Noise level:        "       << params.nl    << '\n'
-      << "Bias current:       "       << params.ib    << '\n'
+      << "Time:               "       << static_cast<double>(params.step) * params.dt << '\n'
+      << "Time step:          "       << params.step                                  << '\n'
+      << "\u0394t:                 "  << params.dt                                    << '\n'
+      << "Size:               "       << params.size                                  << '\n'
+      << "Quality:            "       << params.q                                     << '\n'
+      << "Ground capacitance: "       << params.c0                                    << '\n'
+      << "Cut-off voltage:    "       << params.vg                                    << '\n'
+      << "Noise level:        "       << params.nl                                    << '\n'
+      << "Bias current:       "       << params.ib                                    << '\n'
       << '\n'
       << "| Site |      Phase |    Voltage | Critical current | Quasiparticle resistance |";
 

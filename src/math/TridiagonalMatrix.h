@@ -6,6 +6,7 @@
 #include <cmath>
 #include "TridiagonalLuMatrix.h"
 #include "VectorOperations.h"
+#include "exception/DimensionMismatch.h"
 
 namespace snspd::math {
 
@@ -65,7 +66,7 @@ namespace snspd::math {
           return m_lower;
 
         default:
-          throw std::invalid_argument("The diag must be DIAG (=0), UPPER (=1) or LOWER (=-1)");
+          throw DimensionMismatch("The diag must be DIAG (=0), UPPER (=1) or LOWER (=-1)");
       }
     }
 
@@ -75,7 +76,7 @@ namespace snspd::math {
 
       // Make sure that the length of the new diagonal is the same as the old one
       if (diagonal.size() != value.size()) {
-        throw std::invalid_argument("The assigned value must have the same length as the existing diagonal.");
+        throw DimensionMismatch("The assigned value must have the same length as the existing diagonal.");
       }
 
       diagonal = std::move(value);
@@ -133,7 +134,7 @@ namespace snspd::math {
 
       // Make sure that the size is correct
       if (lhs.m_size != rhs.m_size) {
-        throw std::invalid_argument("Matrices need to have the same size.");
+        throw DimensionMismatch("Matrices need to have the same size.");
       }
 
       TridiagonalMatrix<T> output(lhs.m_size);
@@ -158,7 +159,7 @@ namespace snspd::math {
 
       // Make sure that the size is correct
       if (m_size != mat.m_size) {
-        throw std::invalid_argument("Matrices need to have the same size.");
+        throw DimensionMismatch("Matrices need to have the same size.");
       }
 
       for (std::size_t i = 0; i < m_size; ++i) {
@@ -180,7 +181,7 @@ namespace snspd::math {
 
       // Make sure that the size is correct
       if (lhs.m_size != rhs.m_size) {
-        throw std::invalid_argument("Matrices need to have the same size.");
+        throw DimensionMismatch("Matrices need to have the same size.");
       }
 
       TridiagonalMatrix<T> output(lhs.m_size);
@@ -205,7 +206,7 @@ namespace snspd::math {
 
       // Make sure that the size is correct
       if (m_size != mat.m_size) {
-        throw std::invalid_argument("Matrices need to have the same size.");
+        throw DimensionMismatch("Matrices need to have the same size.");
       }
 
       for (std::size_t i = 0; i < m_size; ++i) {
@@ -265,7 +266,7 @@ namespace snspd::math {
     [[nodiscard]] friend std::vector<T> operator*(const TridiagonalMatrix<T> &mat, const std::vector<T> &vec) {
 
       if (mat.m_size != vec.size()) {
-        throw std::invalid_argument("Matrix and vector needs to have the same size to multiply.");
+        throw DimensionMismatch("Matrix and vector needs to have the same size to multiply.");
       }
 
       std::vector<T> res(mat.m_size);

@@ -1,6 +1,6 @@
 # Based on https://github.com/lefticus/cpp_starter_project by lefticus (Jason Turner)
 
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.15)
 
 # Set the project name
 project(snspd_rcsj CXX)
