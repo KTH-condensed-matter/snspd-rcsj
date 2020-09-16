@@ -11,6 +11,8 @@ namespace snspd {
     // The current time step
     unsigned long step{0};
 
+    const unsigned long max_steps;
+
     // The number of segments.
     const std::size_t size;
 

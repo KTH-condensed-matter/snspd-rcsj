@@ -1,4 +1,5 @@
 #include <iostream>
+#include <docopt/docopt.h>
 #include <spdlog/spdlog.h>
 #include "math/TridiagonalMatrix.h"
 #include "Parameters.h"
@@ -6,14 +7,40 @@
 #include "io/ConfigParser.h"
 #include "io/exception/FileNotFound.h"
 
-int main() {
+static constexpr auto USAGE = R"(
+SNSPD simulation using the non-linear resistive and capacitive shunted junction model
+
+Usage:
+  snspd [options]
+
+Options:
+  -h, --help              Show the help screen.
+  -V, --version           Display the version.
+  -v, --verbose           Run program in verbose mode.
+  -c, --config=<CONFIG>   Path to the JSON config file [default: settings.json].
+  -o, --output=<OUTPUT>   HDF5 file to store output data.
+)";
+
+int main(int argc, char *argv[]) {
 
   using namespace snspd;
+
+  auto args = docopt::docopt(USAGE,{ std::next(argv), std::next(argv, argc) },true,"v1.0.0");
+
+  // Check if verbose logging should be enabled
+  if (args.at("--verbose").asBool()) {
+    spdlog::set_level(spdlog::level::debug);
+    spdlog::debug("Verbose mode enabled.");
+  }
+
+  // Get the config parser;
+  io::ConfigParser config(args);
 
   std::size_t size{10};
 
   Parameters params {
     0,
+    1000,
       size,
       0.01,
       1.0,
@@ -42,17 +69,6 @@ int main() {
   }
 
   std::cout << params << '\n';
-
-  // TODO implement ConfigParser
-  try {
-    io::ConfigParser config("settings.json");
-  } catch (const io::FileNotFound &e) {
-    spdlog::critical(e.what());
-    return 1;
-  } catch (const nlohmann::detail::parse_error &e) {
-    spdlog::critical(e.what());
-    return 1;
-  }
 
   return 0;
 }
