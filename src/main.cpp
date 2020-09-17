@@ -36,6 +36,8 @@ int main(int argc, char *argv[]) {
   // Get the config parser;
   io::ConfigParser config(args);
 
+  std::cout << config.get_config(0) << '\n';
+
   std::size_t size{10};
 
   Parameters params {

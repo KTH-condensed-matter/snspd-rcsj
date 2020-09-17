@@ -34,3 +34,32 @@ nlohmann::json snspd::io::ConfigParser::get_config(const std::map<std::string, d
 
   return out;
 }
+
+snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &config) {
+
+  auto init_config = config["initial"];
+
+  Parameters params {
+      0,
+      init_config["maxSteps"],
+      init_config["size"],
+      init_config["dt"],
+      init_config["q"],
+      init_config["c0"],
+      init_config["vg"],
+      init_config["nl"],
+      init_config["ib"],
+      std::vector<double>(init_config["size"], 1.0),
+      std::vector<double>(init_config["size"], 0.0),
+      std::vector<double>(init_config["size"], 0.0),
+      std::vector<double>(init_config["size"], 0.0)
+  };
+
+  return params;
+}
+
+snspd::Parameters &snspd::io::ConfigParser::get_config([[maybe_unused]] std::size_t step) {
+
+  // TODO implement this
+  return m_param;
+}

@@ -5,7 +5,5 @@ file(GLOB_RECURSE PROJECT_HEADERS "*.h")
 # Add executable
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS})
 target_link_libraries(${PROJECT_NAME} PRIVATE project_options project_warnings
-        CONAN_PKG::fmt CONAN_PKG::spdlog CONAN_PKG::boost_filesystem CONAN_PKG::docopt.cpp)
-
-include(cmake/AddIndicators.cmake)
-include(cmake/AddNlohmannJson.cmake)
+        CONAN_PKG::fmt CONAN_PKG::spdlog CONAN_PKG::boost_filesystem CONAN_PKG::docopt.cpp CONAN_PKG::nlohmann_json
+        CONAN_PKG::indicators)
