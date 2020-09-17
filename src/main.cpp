@@ -58,9 +58,9 @@ int main(int argc, char *argv[]) {
 
   std::size_t multiplier = params.size;
   double arcsin_bias_current_ratio = asin(fmin(params.ib, 1.0));
-  for (auto &value: params.x) {
-    value = static_cast<double>(multiplier--) * arcsin_bias_current_ratio;
-  }
+  std::generate(params.x.begin(), params.x.end(), [&]() {
+    return static_cast<double>(multiplier--) * arcsin_bias_current_ratio;
+  });
 
   Model model(params);
 

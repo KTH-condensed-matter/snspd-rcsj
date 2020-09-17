@@ -14,6 +14,7 @@ namespace snspd::io {
     [[nodiscard]] static nlohmann::json get_config(const std::string &path);
     [[nodiscard]] static nlohmann::json get_config(const std::map<std::string, docopt::value> &args);
     [[nodiscard]] static Parameters init_params(const nlohmann::json &config);
+    [[nodiscard]] static std::vector<double> get_param_vector(const nlohmann::json &vec, const nlohmann::json &config);
 
   public:
     explicit ConfigParser(const std::string &path):
