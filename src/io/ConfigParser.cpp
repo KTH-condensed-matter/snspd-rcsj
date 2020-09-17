@@ -39,6 +39,8 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
 
   auto init_config = config["initial"];
 
+  // TODO check if config is an array
+
   Parameters params {
       0,
       init_config["maxSteps"],
