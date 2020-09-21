@@ -1,8 +1,5 @@
 # Based on https://github.com/lefticus/cpp_starter_project by lefticus (Jason Turner)
 
-include(../cmake/Conan.cmake)
-run_conan()
-
 # automatically enable catch2 to generate ctest targets
 if(CONAN_CATCH2_ROOT_DEBUG)
     include(${CONAN_CATCH2_ROOT_DEBUG}/lib/cmake/Catch2/Catch.cmake)

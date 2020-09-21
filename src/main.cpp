@@ -1,6 +1,7 @@
 #include <iostream>
 #include <docopt/docopt.h>
 #include <spdlog/spdlog.h>
+#include <h5pp/h5pp.h>
 #include "Parameters.h"
 #include "Model.h"
 #include "io/ConfigParser.h"
@@ -45,6 +46,7 @@ int main(int argc, char *argv[]) {
   std::cout << config.get_config() << '\n';
 
   h5pp::File file("test.h5");
+  file.writeDataset(config.get_config().x, "phase");
 
   return 0;
 }
