@@ -77,12 +77,12 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const nlohmann::js
     std::fill(out.begin(), out.end(), vec.get<double>());
   }
 
-  // Fill the vector with the array values if an array is given
+    // Fill the vector with the array values if an array is given
   else if (vec.is_array()) {
     out = config.get<std::vector<double>>();
   }
 
-  // If it has stationaryPhase set to true than fill with vector that makes the phases stationary
+    // If it has stationaryPhase set to true than fill with vector that makes the phases stationary
   else if (vec.is_object() && vec.contains("stationaryPhase")) {
     std::size_t multiplier{size};
     double arcsin_ratio{std::asin(std::min(config["initial"]["ib"].get<double>(), 1.0))};
@@ -92,7 +92,7 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const nlohmann::js
     });
   }
 
-  // If it has random set to true then fill with random values between min and max
+    // If it has random set to true then fill with random values between min and max
   else if (vec.is_object() && vec.contains("random")) {
     std::random_device uniform_rnd_dev;
     std::mt19937 uniform_rnd_gen(uniform_rnd_dev());
@@ -103,7 +103,7 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const nlohmann::js
     });
   }
 
-  // No method found
+    // No method found
   else {
     throw NotImplemented("The selected method for filling the vector is not implemented.");
   }
@@ -111,8 +111,36 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const nlohmann::js
   return out;
 }
 
-snspd::Parameters &snspd::io::ConfigParser::get_config([[maybe_unused]] std::size_t step) {
+void snspd::io::ConfigParser::update_params(std::size_t step) {
 
-  // TODO implement this
-  return m_param;
+  // Update the step
+  m_param.step = step;
+
+  // Update scalars
+  m_param.nl = update_scalar("nl", m_param.nl, step, m_config);
+  m_param.ib = update_scalar("ib", m_param.ib, step, m_config);
+}
+
+double snspd::io::ConfigParser::update_scalar(const std::string &name, double current, std::size_t step,
+                                              const nlohmann::json &config) {
+
+
+  auto updates = config["updates"];
+
+  auto result = std::find_if(updates.begin(),
+                             updates.end(), [&](const nlohmann::json &update) {
+        return update["values"].contains(name) && update["start"].get<std::size_t>() <= step
+               && update["end"].get<std::size_t>() >= step;
+      });
+
+  if (result != updates.end()) {
+    auto start = (*result)["start"].get<std::size_t>();
+    auto end = (*result)["end"].get<std::size_t>();
+    auto from = (*result)["values"][name]["from"].get<double>();
+    auto to = (*result)["values"][name]["to"].get<double>();
+
+    return to * (static_cast<double>(step - start)) / static_cast<double>(end - start) + from;
+  }
+
+  return current;
 }
