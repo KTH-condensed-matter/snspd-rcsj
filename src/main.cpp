@@ -1,11 +1,9 @@
-#include <iostream>
 #include <docopt/docopt.h>
 #include <spdlog/spdlog.h>
-#include <h5pp/h5pp.h>
-#include "Parameters.h"
 #include "Model.h"
 #include "io/ConfigParser.h"
 #include "io/exception/FileNotFound.h"
+#include "io/Exporter.h"
 
 static constexpr auto USAGE = R"(
 SNSPD simulation using the non-linear resistive and capacitive shunted junction model
@@ -36,17 +34,19 @@ int main(int argc, char *argv[]) {
   // Get the config parser;
   io::ConfigParser config(args);
 
-  Model model(config.get_config());
+  // Get the exporter
+  io::Exporter exporter(config.get_settings(), config.get_params());
 
-  for (std::size_t i = 0; i < config.get_config().max_steps; ++i) {
+  // Get the model
+  Model model(config.get_params());
+
+  for (std::size_t i = 0; i < config.get_params().max_steps; ++i) {
     config.update_params(i);
     model.run();
+    exporter.save(config.get_params());
   }
 
-  std::cout << config.get_config() << '\n';
-
-  h5pp::File file("test.h5");
-  file.writeDataset(config.get_config().x, "phase");
+  exporter.flush();
 
   return 0;
 }

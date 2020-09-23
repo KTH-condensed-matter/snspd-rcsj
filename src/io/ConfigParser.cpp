@@ -1,6 +1,8 @@
+#include <chrono>
 #include <fstream>
 #include <filesystem>
 #include <fmt/format.h>
+#include <fmt/chrono.h>
 #include <spdlog/spdlog.h>
 #include <random>
 #include "ConfigParser.h"
@@ -27,14 +29,7 @@ nlohmann::json snspd::io::ConfigParser::get_config(const std::map<std::string, d
   // Path to the config file
   std::string path = args.at("--config").asString();
 
-  // Get the config
-  auto out = get_config(path);
-
-  if (args.at("--output")) {
-    out["output"] = args.at("--output").asString();
-  }
-
-  return out;
+  return get_config(path);
 }
 
 snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &config) {
@@ -62,6 +57,34 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
   };
 
   return params;
+}
+
+snspd::Settings
+snspd::io::ConfigParser::init_settings(const nlohmann::json &config, const std::map<std::string, docopt::value> &args) {
+  std::string output;
+
+  // Check if the output is given as a CLI param
+  if (args.at("--output")) {
+    output = args.at("--output").asString();
+  }
+
+  // Check if config sets the output
+  else if (config.contains("settings") && config["settings"].contains("output")) {
+    output = config["settings"]["output"].get<std::string>();
+  }
+
+  else {
+    auto now = std::chrono::system_clock::now();
+    time_t tt = std::chrono::system_clock::to_time_t(now);
+    tm local_tm = *localtime(&tt);
+    output = fmt::format("out_{:%Y-%m-%d-%H%M%S}.h5", local_tm);
+  }
+
+  Settings settings {
+    output
+  };
+
+  return settings;
 }
 
 std::vector<double> snspd::io::ConfigParser::get_param_vector(const nlohmann::json &vec, const nlohmann::json &config) {

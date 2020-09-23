@@ -11,12 +11,12 @@ namespace snspd {
     // The current time step
     unsigned long step{0};
 
-    const unsigned long max_steps;
+    unsigned long max_steps;
 
     // The number of segments.
-    const std::size_t size;
+    std::size_t size;
 
-    const double
+    double
 
         // Length of a time step measured in units of L_K/R.
         dt,

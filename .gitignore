@@ -19,3 +19,8 @@ CMakeCache.txt
 /lib
 /bin
 
+# Datafiles
+*.h5
+
+# Environments
+/venv
