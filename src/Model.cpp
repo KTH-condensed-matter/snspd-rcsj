@@ -21,9 +21,6 @@ void snspd::Model::run() {
   // Update the voltage and phase
   m_param.v += res;
   m_param.x += m_param.v * m_param.dt;
-
-  // Update the current time step
-  ++m_param.step;
 }
 
 std::vector<double> snspd::Model::generate_rnd_vector(double amplitude, std::size_t length) {

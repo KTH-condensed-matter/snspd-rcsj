@@ -43,6 +43,8 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
   Parameters params {
       0,
       init_config["maxSteps"].get<unsigned long>(),
+      init_config["average"].get<unsigned long>(),
+      0,
       size,
       init_config["dt"],
       init_config["q"],
@@ -74,14 +76,16 @@ snspd::io::ConfigParser::init_settings(const nlohmann::json &config, const std::
   }
 
   else {
-    auto now = std::chrono::system_clock::now();
-    time_t tt = std::chrono::system_clock::to_time_t(now);
-    tm local_tm = *localtime(&tt);
-    output = fmt::format("out_{:%Y-%m-%d-%H%M%S}.h5", local_tm);
+    output = "out_{:%Y-%m-%d-%H%M%S}.h5";
   }
 
+  // Get current time
+  auto now = std::chrono::system_clock::now();
+  time_t tt = std::chrono::system_clock::to_time_t(now);
+  tm local_tm = *localtime(&tt);
+
   Settings settings {
-    output
+      fmt::format(output, local_tm)
   };
 
   return settings;
@@ -139,6 +143,9 @@ void snspd::io::ConfigParser::update_params(std::size_t step) {
   // Update the step
   m_param.step = step;
 
+  // Update the time step
+  ++m_param.time_step;
+
   // Update scalars
   m_param.nl = update_scalar("nl", m_param.nl, step, m_config);
   m_param.ib = update_scalar("ib", m_param.ib, step, m_config);
@@ -162,7 +169,7 @@ double snspd::io::ConfigParser::update_scalar(const std::string &name, double cu
     auto from = (*result)["values"][name]["from"].get<double>();
     auto to = (*result)["values"][name]["to"].get<double>();
 
-    return to * (static_cast<double>(step - start)) / static_cast<double>(end - start) + from;
+    return (to - from) * (static_cast<double>(step - start)) / static_cast<double>(end - start) + from;
   }
 
   return current;

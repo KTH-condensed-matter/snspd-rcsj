@@ -21,6 +21,11 @@ CMakeCache.txt
 
 # Datafiles
 *.h5
+/data/*.h5
 
-# Environments
+# Python environment and cache
 /venv
+/__pycache__
+
+# Log files
+*.log

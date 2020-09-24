@@ -8,10 +8,14 @@
 namespace snspd {
   struct Parameters {
 
-    // The current time step
+    // The current parameter step
     unsigned long step{0};
 
     unsigned long max_steps;
+
+    unsigned long average{1};
+
+    unsigned long time_step{0};
 
     // The number of segments.
     std::size_t size;
@@ -61,15 +65,15 @@ namespace snspd {
   // Make it possible to print parameters
   inline std::ostream& operator<<(std::ostream &os, const snspd::Parameters &params) {
     os
-      << "Time:               "       << static_cast<double>(params.step) * params.dt << '\n'
-      << "Time step:          "       << params.step                                  << '\n'
-      << "\u0394t:                 "  << params.dt                                    << '\n'
-      << "Size:               "       << params.size                                  << '\n'
-      << "Quality:            "       << params.q                                     << '\n'
-      << "Ground capacitance: "       << params.c0                                    << '\n'
-      << "Cut-off voltage:    "       << params.vg                                    << '\n'
-      << "Noise level:        "       << params.nl                                    << '\n'
-      << "Bias current:       "       << params.ib                                    << '\n'
+      << "Time:               "       << static_cast<double>(params.time_step) * params.dt  << '\n'
+      << "Time step:          "       << params.time_step                                   << '\n'
+      << "\u0394t:                 "  << params.dt                                          << '\n'
+      << "Size:               "       << params.size                                        << '\n'
+      << "Quality:            "       << params.q                                           << '\n'
+      << "Ground capacitance: "       << params.c0                                          << '\n'
+      << "Cut-off voltage:    "       << params.vg                                          << '\n'
+      << "Noise level:        "       << params.nl                                          << '\n'
+      << "Bias current:       "       << params.ib                                          << '\n'
       << '\n'
       << "| Site |      Phase |    Voltage | Critical current | Quasiparticle resistance |";
 

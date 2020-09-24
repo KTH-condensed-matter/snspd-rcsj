@@ -46,5 +46,9 @@ namespace snspd::io {
     [[nodiscard]] const Settings& get_settings() const {
       return m_settings;
     }
+
+    [[nodiscard]] nlohmann::json& get_json_config() {
+      return m_config;
+    }
   };
 }

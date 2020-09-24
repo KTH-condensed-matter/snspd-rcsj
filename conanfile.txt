@@ -8,8 +8,8 @@ spdlog/1.5.0
 docopt.cpp/0.6.3
 nlohmann_json/3.9.1
 indicators/1.9
+h5pp/1.8.3
 boost_filesystem/1.69.0@bincrafters/stable
-h5pp/1.8.1@davidace/stable
 
 [options]
 
