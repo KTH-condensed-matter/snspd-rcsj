@@ -34,15 +34,19 @@ namespace snspd {
         // Cut-off voltage in terms of R I_c.
         // Below this voltage the resistance is given by rqp.
         // Above this voltage the resistance is given by 1 (= R / R).
-        vg;
-
-    double
+        vg,
 
         // Noise level given by \sqrt(2 k_B T / (R I_c^2))
         nl,
 
         // Bias current in terms of the critical current.
-        ib;
+        ib,
+
+        // Bias voltage in terms of R I_c.
+        vb,
+
+        // Resistance in series with the SNSPD
+        rt;
 
     std::vector<double>
 

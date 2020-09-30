@@ -115,6 +115,13 @@ std::vector<double> snspd::Model::get_force_damping(const snspd::Parameters &par
   // Noise
   // {rnd(0), rnd(1) - rnd(0), ..., rnd(n) - rnd(n - 1), -rnd(n)}
   auto rnd = generate_rnd_vector(param.nl * std::sqrt(param.dt), param.size);
+
+  // Compensate noise with the resistance
+  for (std::size_t i = 0; i < rnd.size(); ++i) {
+    rnd.at(i) *= std::sqrt(get_resistance(param, i));
+  }
+
+  // The difference between terms is the noise
   auto noise = math::shifted_diff(rnd, rnd);
 
   // Sine phase difference

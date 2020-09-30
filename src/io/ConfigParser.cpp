@@ -35,11 +35,12 @@ nlohmann::json snspd::io::ConfigParser::get_config(const std::map<std::string, d
 snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &config) {
 
   // Get the initial config values
-  auto init_config = config["initial"];
+  auto init_config = config["parameters"];
 
   // Get the system size
   std::size_t size{init_config["size"].get<std::size_t>()};
 
+  spdlog::debug("Creating parameter struct");
   Parameters params {
       0,
       init_config["maxSteps"].get<unsigned long>(),
@@ -52,6 +53,8 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
       init_config["vg"],
       init_config["nl"],
       init_config["ib"],
+      init_config["vb"],
+      init_config["rt"],
       get_param_vector(init_config["ic"], config),
       get_param_vector(init_config["x"], config),
       get_param_vector(init_config["v"], config),
@@ -94,7 +97,7 @@ snspd::io::ConfigParser::init_settings(const nlohmann::json &config, const std::
 std::vector<double> snspd::io::ConfigParser::get_param_vector(const nlohmann::json &vec, const nlohmann::json &config) {
 
   // Get the system size
-  std::size_t size{config["initial"]["size"].get<std::size_t>()};
+  std::size_t size{config["parameters"]["size"].get<std::size_t>()};
 
   // Create the object to be returned
   std::vector<double> out(size);
@@ -112,7 +115,7 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const nlohmann::js
     // If it has stationaryPhase set to true than fill with vector that makes the phases stationary
   else if (vec.is_object() && vec.contains("stationaryPhase")) {
     std::size_t multiplier{size};
-    double arcsin_ratio{std::asin(std::min(config["initial"]["ib"].get<double>(), 1.0))};
+    double arcsin_ratio{std::asin(std::min(config["parameters"]["ib"].get<double>(), 1.0))};
 
     std::generate(out.begin(), out.end(), [&]() {
       return static_cast<double>(multiplier--) * arcsin_ratio;
@@ -149,11 +152,17 @@ void snspd::io::ConfigParser::update_params(std::size_t step) {
   // Update scalars
   m_param.nl = update_scalar("nl", m_param.nl, step, m_config);
   m_param.ib = update_scalar("ib", m_param.ib, step, m_config);
+  m_param.vb = update_scalar("vb", m_param.ib, step, m_config);
+  m_param.rt = update_scalar("rt", m_param.ib, step, m_config);
 }
 
 double snspd::io::ConfigParser::update_scalar(const std::string &name, double current, std::size_t step,
                                               const nlohmann::json &config) {
 
+  // Do not update the parameters if the update section is missing
+  if (!config.contains("updates")) {
+    return current;
+  }
 
   auto updates = config["updates"];
 

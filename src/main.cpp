@@ -5,6 +5,7 @@
 #include "io/ConfigParser.h"
 #include "io/exception/FileNotFound.h"
 #include "io/Exporter.h"
+#include "bc/BoundaryConditionFactory.h"
 
 static constexpr auto USAGE = R"(
 SNSPD simulation using the non-linear resistive and capacitive shunted junction model
@@ -42,6 +43,9 @@ int main(int argc, char *argv[]) {
   // Get the model
   Model model(config.get_params());
 
+  // Get the boundary conditions
+  auto boundary_condition = bc::BoundaryConditionFactory::make(config);
+
   // Progress bar
   ProgressBar bar{
       option::BarWidth{50},
@@ -66,11 +70,13 @@ int main(int argc, char *argv[]) {
     // Run averaging
     for (std::size_t j = 0; j < config.get_params().average; ++j) {
       config.update_params(i);
+      boundary_condition->run();
       model.run();
       exporter.save(config.get_params());
     }
   }
 
+  // Write data to disk
   exporter.flush();
 
   return 0;

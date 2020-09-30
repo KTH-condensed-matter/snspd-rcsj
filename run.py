@@ -106,8 +106,8 @@ class PlotterCli:
     def _get_files_(self):
         path = Path(self.args.input)
 
-        files = [os.path.join(str(path), o) for o in os.listdir(str(path))
-                 if not os.path.isdir(os.path.join(str(path), o)) and o.endswith('.h5')]
+        files = sorted([os.path.join(str(path), o) for o in os.listdir(str(path))
+                 if not os.path.isdir(os.path.join(str(path), o)) and o.endswith('.h5')])
 
         return files
 

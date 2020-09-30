@@ -1,0 +1,26 @@
+{
+  "settings": {
+    "output": "data/photon/{:%Y-%m-%d_%H%M%S}.h5"
+  },
+  "parameters": {
+    "boundaryCondition": "voltage",
+    "maxSteps": 10000,
+    "average": 1,
+    "size": 400,
+    "dt": 0.01,
+    "q": 1.1107,
+    "c0": 0.01,
+    "vg": 0,
+    "nl": 0.0058,
+    "ib": 0,
+    "vb": 0,
+    "rt": 1,
+    "ic": 1,
+    "rqp": 0,
+    "v": 0,
+    "x": {
+      "stationaryPhase": true
+    }
+  },
+  "updates": []
+}
