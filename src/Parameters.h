@@ -36,17 +36,31 @@ namespace snspd {
         // Above this voltage the resistance is given by 1 (= R / R).
         vg,
 
-        // Noise level given by \sqrt(2 k_B T / (R I_c^2))
+        // Noise level given by \sqrt(2 k_B T / (R I_c^2)).
         nl,
 
-        // Bias current in terms of the critical current.
+        // Current going into the SNSPD. Measured in terms of the critical current I_c.
+        i,
+
+        // Bias current in terms of the critical current I_c.
+        // Used when current bias is used.
         ib,
 
         // Bias voltage in terms of R I_c.
+        // Used when voltage bias is used.
         vb,
 
-        // Resistance in series with the SNSPD
-        rt;
+        // Resistance in series with the SNSPD. Measured in terms of the resistance R.
+        // Used when voltage bias is used.
+        rt,
+
+        // Resistor shunting the SNSPD. Measured in terms of the resistance R.
+        // Used when current or voltage bias is used.
+        rs,
+
+        // Capacitor shunting the SNSPD. Measured in terms of
+        // Used when current or voltage bias is used.
+        cs;
 
     std::vector<double>
 
@@ -60,6 +74,9 @@ namespace snspd {
 
         // The voltage at each site.
         v,
+
+        // The voltage time derivative at each site.
+        a,
 
         // Quasiparticle resistance in terms of the resistance R.
         // The resistance can take different values for each site.

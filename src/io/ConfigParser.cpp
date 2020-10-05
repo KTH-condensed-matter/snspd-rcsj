@@ -52,12 +52,16 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
       init_config["c0"],
       init_config["vg"],
       init_config["nl"],
+      init_config["i"],
       init_config["ib"],
       init_config["vb"],
       init_config["rt"],
+      init_config["rs"],
+      init_config["cs"],
       get_param_vector(init_config["ic"], config),
       get_param_vector(init_config["x"], config),
       get_param_vector(init_config["v"], config),
+      get_param_vector(init_config["a"], config),
       get_param_vector(init_config["rqp"], config)
   };
 
@@ -151,9 +155,12 @@ void snspd::io::ConfigParser::update_params(std::size_t step) {
 
   // Update scalars
   m_param.nl = update_scalar("nl", m_param.nl, step, m_config);
+  m_param.i = update_scalar("i", m_param.i, step, m_config);
   m_param.ib = update_scalar("ib", m_param.ib, step, m_config);
-  m_param.vb = update_scalar("vb", m_param.ib, step, m_config);
-  m_param.rt = update_scalar("rt", m_param.ib, step, m_config);
+  m_param.vb = update_scalar("vb", m_param.vb, step, m_config);
+  m_param.rt = update_scalar("rt", m_param.rt, step, m_config);
+  m_param.rs = update_scalar("rs", m_param.rs, step, m_config);
+  m_param.cs = update_scalar("cs", m_param.cs, step, m_config);
 }
 
 double snspd::io::ConfigParser::update_scalar(const std::string &name, double current, std::size_t step,

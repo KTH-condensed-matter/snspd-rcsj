@@ -9,6 +9,9 @@ void snspd::Model::run() {
 
   using namespace snspd::math;
 
+  // Update the phase to t + dt/2
+  m_param.x += m_param.v * (m_param.dt / 2);
+
   // Get alpha
   TridiagonalMatrix<double> alpha = generate_alpha_matrix(m_param);
 
@@ -19,8 +22,9 @@ void snspd::Model::run() {
   auto res = mass_alpha.solve(get_force_damping(m_param, alpha));
 
   // Update the voltage and phase
+  m_param.a = res / m_param.dt;
   m_param.v += res;
-  m_param.x += m_param.v * m_param.dt;
+  m_param.x += m_param.v * (m_param.dt / 2);
 }
 
 std::vector<double> snspd::Model::generate_rnd_vector(double amplitude, std::size_t length) {
@@ -129,7 +133,7 @@ std::vector<double> snspd::Model::get_force_damping(const snspd::Parameters &par
   auto sine_diff = math::sin(math::shifted_diff(param.x, param.x));
 
   // Set the first component
-  force.at(0) = param.dt * (param.ib + param.ic.at(0) * sine_diff.at(1) - alpha_v.at(0)) - noise.at(0);
+  force.at(0) = param.dt * (param.i + param.ic.at(0) * sine_diff.at(1) - alpha_v.at(0)) - noise.at(0);
 
   // Set the other components
   for (std::size_t i = 1; i < param.size; ++i) {

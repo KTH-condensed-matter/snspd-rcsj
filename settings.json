@@ -3,40 +3,44 @@
     "output": "data/{:%Y-%m-%d_%H%M%S}.h5"
   },
   "parameters": {
-    "boundaryCondition": "current",
+    "boundaryCondition": "voltage",
     "maxSteps": 1000,
-    "average": 2000,
+    "average": 20000,
     "size": 400,
     "dt": 0.01,
     "q": 1.1107,
     "c0": 0.01,
-    "vg": 0,
+    "vg": 1,
     "nl": 0.0058,
+    "i": 0,
     "ib": 0,
     "vb": 0,
-    "rt": 1,
+    "rt": 200,
+    "rs": 0.125,
+    "cs": 2000,
     "ic": 1,
-    "rqp": 0,
-    "v": 0,
     "x": {
       "stationaryPhase": true
-    }
+    },
+    "v": 0,
+    "a": 0,
+    "rqp": 1000
   },
   "updates": [{
     "start": 0,
     "end": 500,
     "values": {
-      "ib": {
+      "vb": {
         "from": 0,
-        "to": 5
+        "to": 1000
       }
     }
   }, {
     "start": 501,
     "end": 1000,
     "values": {
-      "ib": {
-        "from": 5,
+      "vb": {
+        "from": 1000,
         "to": 0
       }
     }

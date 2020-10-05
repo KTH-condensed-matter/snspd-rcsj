@@ -72,9 +72,7 @@ namespace snspd::math {
 
     std::vector<T> res(vec.size());
 
-    for (std::size_t i = 0; i < vec.size(); ++i) {
-      res.at(i) = vec.at(i) * scalar;
-    }
+    std::transform(res.begin(), res.end(), res.begin(), std::bind1st(std::multiplies<T>(), scalar));
 
     return res;
   }
@@ -83,6 +81,12 @@ namespace snspd::math {
   template <typename T>
   [[nodiscard]] std::vector<T> operator*(const T &scalar, const std::vector<T> &vec) {
     return vec * scalar;
+  }
+
+  // Allow vectors to be divided by a scalar
+  template <typename T>
+  [[nodiscard]] std::vector<T> operator/(const std::vector<T> &vec, const T &scalar) {
+    return vec * (1 / scalar);
   }
 
   // Allow vectors to be multiplied component-wise

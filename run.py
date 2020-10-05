@@ -107,7 +107,7 @@ class PlotterCli:
         path = Path(self.args.input)
 
         files = sorted([os.path.join(str(path), o) for o in os.listdir(str(path))
-                 if not os.path.isdir(os.path.join(str(path), o)) and o.endswith('.h5')])
+                        if not os.path.isdir(os.path.join(str(path), o)) and o.endswith('.h5')])
 
         return files
 
@@ -120,7 +120,7 @@ class PlotterCli:
 
     @staticmethod
     def _format_file_config_(config):
-        initial = config['initial']
+        initial = config['parameters']
         return 'sz={sz}, st={st}, av={av}, dt={dt}, q={q}, c0={c0}, vg={vg}, nl={nl}, ib={ib}'.format(
             sz=initial['size'],
             st=initial['maxSteps'],
