@@ -3,11 +3,11 @@
     "output": "data/{:%Y-%m-%d_%H%M%S}.h5"
   },
   "parameters": {
-    "boundaryCondition": "voltage",
+    "boundaryCondition": "simple",
     "maxSteps": 1000,
     "average": 20000,
     "size": 400,
-    "dt": 0.01,
+    "dt": 0.1,
     "q": 1.1107,
     "c0": 0.01,
     "vg": 1,
@@ -17,7 +17,7 @@
     "vb": 0,
     "rt": 200,
     "rs": 0.125,
-    "cs": 2000,
+    "cs": 0,
     "ic": 1,
     "x": {
       "stationaryPhase": true
@@ -30,17 +30,17 @@
     "start": 0,
     "end": 500,
     "values": {
-      "vb": {
+      "ib": {
         "from": 0,
-        "to": 1000
+        "to": 5
       }
     }
   }, {
     "start": 501,
     "end": 1000,
     "values": {
-      "vb": {
-        "from": 1000,
+      "ib": {
+        "from": 5,
         "to": 0
       }
     }

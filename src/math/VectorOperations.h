@@ -72,7 +72,7 @@ namespace snspd::math {
 
     std::vector<T> res(vec.size());
 
-    std::transform(res.begin(), res.end(), res.begin(), std::bind1st(std::multiplies<T>(), scalar));
+    std::transform(vec.begin(), vec.end(), res.begin(), std::bind1st(std::multiplies<T>(), scalar));
 
     return res;
   }

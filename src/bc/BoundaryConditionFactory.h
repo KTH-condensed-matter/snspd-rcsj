@@ -26,6 +26,11 @@ namespace snspd::bc {
 
       auto boundary_condition = parser.get_json_config()["parameters"]["boundaryCondition"].get<std::string>();
 
+      if (boundary_condition == "simple") {
+        spdlog::debug("Using current bias current with no circuit.");
+        return std::make_unique<BoundaryCondition>(parser.get_params());
+      }
+
       if (boundary_condition == "current") {
         spdlog::debug("Using current bias boundary condition.");
         return std::make_unique<CurrentBiasBoundaryCondition>(parser.get_params());

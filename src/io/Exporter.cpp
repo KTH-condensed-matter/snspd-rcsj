@@ -4,7 +4,7 @@ void snspd::io::Exporter::save(const snspd::Parameters &param) {
   auto average = static_cast<double>(param.average);
   m_v.at(param.step) += param.v.at(0) / average;
   m_ib.at(param.step) += param.i / average;
-  m_t.at(param.step) += static_cast<double>(param.time_step) * param.dt;
+  m_t.at(param.step) += static_cast<double>(param.time_step) * param.dt / average;
 }
 
 void snspd::io::Exporter::flush() {

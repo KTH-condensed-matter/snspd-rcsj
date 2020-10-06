@@ -117,7 +117,7 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const nlohmann::js
   }
 
     // If it has stationaryPhase set to true than fill with vector that makes the phases stationary
-  else if (vec.is_object() && vec.contains("stationaryPhase")) {
+  else if (vec.is_object() && vec.contains("stationaryPhase") && vec["stationaryPhase"].get<bool>()) {
     std::size_t multiplier{size};
     double arcsin_ratio{std::asin(std::min(config["parameters"]["ib"].get<double>(), 1.0))};
 
@@ -127,7 +127,7 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const nlohmann::js
   }
 
     // If it has random set to true then fill with random values between min and max
-  else if (vec.is_object() && vec.contains("random")) {
+  else if (vec.is_object() && vec.contains("random") && vec["random"].get<bool>()) {
     std::random_device uniform_rnd_dev;
     std::mt19937 uniform_rnd_gen(uniform_rnd_dev());
     std::uniform_real_distribution<double> uniform_dist(vec["min"].get<double>(), vec["max"].get<double>());

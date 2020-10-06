@@ -16,7 +16,10 @@ namespace snspd::bc {
 
     virtual ~BoundaryCondition() = default;
 
-    virtual void run() = 0;
+    // Simplest possible boundary condition
+    virtual void run() {
+      m_param.i = m_param.ib;
+    };
   };
 }
 
