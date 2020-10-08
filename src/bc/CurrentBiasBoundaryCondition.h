@@ -17,13 +17,13 @@ namespace snspd::bc {
     }
 
     // Compute the current going into the SNSPD
-    // The current going through the SNSPD is given by I = I_b - V_0 / R_s - eta_s - C_s dV0/dt
+    // The current going through the SNSPD is given by I = I_b - V_0 / R_s - eta_s
     void run() override {
 
       // Compute the stochastic term
       auto noise = m_param.nl * std::sqrt(m_param.dt * m_param.rs) * m_rnd_dist(m_rnd_gen);
 
-      m_param.i = m_param.ib - m_param.v.at(0) / m_param.rs - noise - m_param.cs * m_param.a.at(0);
+      m_param.i = m_param.ib - m_param.v.at(0) / m_param.rs - noise;
     }
   };
 }

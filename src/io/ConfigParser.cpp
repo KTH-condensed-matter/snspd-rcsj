@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fmt/format.h>
 #include <fmt/chrono.h>
+#include <fmt/ranges.h>
 #include <spdlog/spdlog.h>
 #include <random>
 #include "ConfigParser.h"
@@ -40,7 +41,7 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
   // Get the system size
   std::size_t size{init_config["size"].get<std::size_t>()};
 
-  spdlog::debug("Creating parameter struct");
+  spdlog::debug("Creating parameter struct.");
   Parameters params {
       0,
       init_config["maxSteps"].get<unsigned long>(),
@@ -58,11 +59,10 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
       init_config["rt"],
       init_config["rs"],
       init_config["cs"],
-      get_param_vector(init_config["ic"], config),
-      get_param_vector(init_config["x"], config),
-      get_param_vector(init_config["v"], config),
-      get_param_vector(init_config["a"], config),
-      get_param_vector(init_config["rqp"], config)
+      get_param_vector("ic", config),
+      get_param_vector("x", config),
+      get_param_vector("v", config),
+      get_param_vector("rqp", config)
   };
 
   return params;
@@ -77,7 +77,7 @@ snspd::io::ConfigParser::init_settings(const nlohmann::json &config, const std::
     output = args.at("--output").asString();
   }
 
-  // Check if config sets the output
+    // Check if config sets the output
   else if (config.contains("settings") && config["settings"].contains("output")) {
     output = config["settings"]["output"].get<std::string>();
   }
@@ -98,43 +98,83 @@ snspd::io::ConfigParser::init_settings(const nlohmann::json &config, const std::
   return settings;
 }
 
-std::vector<double> snspd::io::ConfigParser::get_param_vector(const nlohmann::json &vec, const nlohmann::json &config) {
+std::vector<double> snspd::io::ConfigParser::get_param_vector(const std::string &name, const nlohmann::json &config) {
+
+  auto inital_config = config["parameters"];
+  auto vec = inital_config[name];
 
   // Get the system size
-  std::size_t size{config["parameters"]["size"].get<std::size_t>()};
+  std::size_t size{inital_config["size"].get<std::size_t>()};
 
   // Create the object to be returned
   std::vector<double> out(size);
 
   // Fill the vector with a number if a scalar is given
   if (vec.is_number()) {
+
+    spdlog::debug("Filling {} with {}.", name, vec.get<double>());
+
     std::fill(out.begin(), out.end(), vec.get<double>());
   }
 
     // Fill the vector with the array values if an array is given
   else if (vec.is_array()) {
-    out = config.get<std::vector<double>>();
+
+    spdlog::debug("Setting {} to {}.", name, vec.get<std::vector<double>>());
+
+    out = vec.get<std::vector<double>>();
   }
 
-    // If it has stationaryPhase set to true than fill with vector that makes the phases stationary
-  else if (vec.is_object() && vec.contains("stationaryPhase") && vec["stationaryPhase"].get<bool>()) {
-    std::size_t multiplier{size};
-    double arcsin_ratio{std::asin(std::min(config["parameters"]["ib"].get<double>(), 1.0))};
+    // Use the options to fill the array
+  else if (vec.is_object()) {
 
-    std::generate(out.begin(), out.end(), [&]() {
-      return static_cast<double>(multiplier--) * arcsin_ratio;
-    });
-  }
+    // Value is set
+    if (vec.contains("value")) {
 
-    // If it has random set to true then fill with random values between min and max
-  else if (vec.is_object() && vec.contains("random") && vec["random"].get<bool>()) {
-    std::random_device uniform_rnd_dev;
-    std::mt19937 uniform_rnd_gen(uniform_rnd_dev());
-    std::uniform_real_distribution<double> uniform_dist(vec["min"].get<double>(), vec["max"].get<double>());
+      spdlog::debug("Filling {} with {}.", name, vec["value"].get<double>());
 
-    std::generate(out.begin(), out.end(), [&](){
-      return uniform_dist(uniform_rnd_gen);
-    });
+      std::fill(out.begin(), out.end(), vec["value"].get<double>());
+    }
+
+      // If it has stationaryPhase set to true than fill with vector that makes the phases stationary
+    else if (vec.contains("stationaryPhase") && vec["stationaryPhase"].get<bool>() && name == "x") {
+
+      spdlog::debug("Setting {} to a stationary phase.", name);
+
+      std::size_t multiplier{size};
+      double arcsin_ratio{std::asin(std::min(inital_config["ib"].get<double>(), 1.0))};
+
+      std::generate(out.begin(), out.end(), [&]() {
+        return static_cast<double>(multiplier--) * arcsin_ratio;
+      });
+    }
+
+      // If it has random set to true then fill with random values between min and max
+    else if (vec.contains("random") && vec["random"].get<bool>()) {
+
+      spdlog::debug("Setting {} to uniform random values in the interval [{}, {}],", name,
+                    vec["min"].get<double>(), vec["max"].get<double>());
+
+      std::random_device uniform_rnd_dev;
+      std::mt19937 uniform_rnd_gen(uniform_rnd_dev());
+      std::uniform_real_distribution<double> uniform_dist(vec["min"].get<double>(), vec["max"].get<double>());
+
+      std::generate(out.begin(), out.end(), [&](){
+        return uniform_dist(uniform_rnd_gen);
+      });
+    }
+
+    // Set specific values
+    if (vec.contains("values") && vec["values"].is_array()) {
+      for (const auto &element : vec["values"]) {
+        if (element.contains("index") && element.contains("value")) {
+          spdlog::debug("Setting {}[{}] to {}.", name, element["index"].get<std::size_t>(),
+                        element["value"].get<double>());
+          out.at(element["index"].get<std::size_t>()) = element["value"].get<double>();
+        }
+      }
+    }
+
   }
 
     // No method found
@@ -158,9 +198,12 @@ void snspd::io::ConfigParser::update_params(std::size_t step) {
   m_param.i = update_scalar("i", m_param.i, step, m_config);
   m_param.ib = update_scalar("ib", m_param.ib, step, m_config);
   m_param.vb = update_scalar("vb", m_param.vb, step, m_config);
-  m_param.rt = update_scalar("rt", m_param.rt, step, m_config);
-  m_param.rs = update_scalar("rs", m_param.rs, step, m_config);
-  m_param.cs = update_scalar("cs", m_param.cs, step, m_config);
+
+  // Update vectors
+  update_vector("x", m_param.x, step, m_config);
+  update_vector("v", m_param.v, step, m_config);
+  update_vector("ic", m_param.ic, step, m_config);
+  update_vector("rqp", m_param.rqp, step, m_config);
 }
 
 double snspd::io::ConfigParser::update_scalar(const std::string &name, double current, std::size_t step,
@@ -173,11 +216,10 @@ double snspd::io::ConfigParser::update_scalar(const std::string &name, double cu
 
   auto updates = config["updates"];
 
-  auto result = std::find_if(updates.begin(),
-                             updates.end(), [&](const nlohmann::json &update) {
-        return update["values"].contains(name) && update["start"].get<std::size_t>() <= step
-               && update["end"].get<std::size_t>() >= step;
-      });
+  auto result = std::find_if(updates.begin(), updates.end(), [&](const nlohmann::json &update) {
+    return update["values"].contains(name) && update["start"].get<std::size_t>() <= step
+           && update["end"].get<std::size_t>() >= step;
+  });
 
   if (result != updates.end()) {
     auto start = (*result)["start"].get<std::size_t>();
@@ -189,4 +231,33 @@ double snspd::io::ConfigParser::update_scalar(const std::string &name, double cu
   }
 
   return current;
+}
+
+void snspd::io::ConfigParser::update_vector(const std::string &name, std::vector<double> &vec, std::size_t step,
+                                            const nlohmann::json &config) {
+
+  // Do not update the parameters if the update section is missing
+  if (!config.contains("updates")) {
+    return;
+  }
+
+  auto updates = config["updates"];
+
+  auto result = std::find_if(updates.begin(), updates.end(), [&](const nlohmann::json &update) {
+    return update["values"].contains(name) && update["start"].get<std::size_t>() <= step
+           && update["end"].get<std::size_t>() >= step;
+  });
+
+  if (result != updates.end()) {
+    auto start = (*result)["start"].get<std::size_t>();
+    auto end = (*result)["end"].get<std::size_t>();
+
+    for (const auto &update : (*result)["values"][name]) {
+      auto index = update["index"].get<std::size_t>();
+      auto from = update["from"].get<double>();
+      auto to = update["to"].get<double>();
+
+      vec.at(index) = (to - from) * (static_cast<double>(step - start)) / static_cast<double>(end - start) + from;
+    }
+  }
 }

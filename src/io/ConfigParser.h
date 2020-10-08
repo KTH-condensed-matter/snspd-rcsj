@@ -18,9 +18,11 @@ namespace snspd::io {
     [[nodiscard]] static Parameters init_params(const nlohmann::json &config);
     [[nodiscard]] static Settings init_settings(const nlohmann::json &config,
                                                 const std::map<std::string, docopt::value> &args);
-    [[nodiscard]] static std::vector<double> get_param_vector(const nlohmann::json &vec, const nlohmann::json &config);
+    [[nodiscard]] static std::vector<double> get_param_vector(const std::string &name, const nlohmann::json &config);
     [[nodiscard]] static double update_scalar(const std::string &name, double current, std::size_t step,
                                               const nlohmann::json &config);
+    static void update_vector(const std::string &name, std::vector<double> &vec, std::size_t step,
+                              const nlohmann::json &config);
 
   public:
     explicit ConfigParser(const std::string &path):

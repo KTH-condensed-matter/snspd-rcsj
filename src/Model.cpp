@@ -22,7 +22,6 @@ void snspd::Model::run() {
   auto res = mass_alpha.solve(get_force_damping(m_param, alpha));
 
   // Update the voltage and phase
-  m_param.a = res / m_param.dt;
   m_param.v += res;
   m_param.x += m_param.v * (m_param.dt / 2);
 }
@@ -42,9 +41,9 @@ snspd::math::TridiagonalMatrix<double> snspd::Model::generate_mass_matrix(const 
 
   mat mass(param.size);
 
-  // Fill the diagonal with {(1 + c0)q^2, (2 + c0)q^2, (2 + c0)q^2, ...}.
+  // Fill the diagonal with {(1 + c0 + cs)q^2, (2 + c0)q^2, (2 + c0)q^2, ...}.
   mass.fill_diagonal(mat::DIAG, (2 + param.c0) * param.q * param.q);
-  mass.set(mat::DIAG, 0, (1 + param.c0) * param.q * param.q);
+  mass.set(mat::DIAG, 0, (1 + param.c0 + param.cs) * param.q * param.q);
 
   // Fill the upper diagonal with {-q^2, -q^2, ...}.
   mass.fill_diagonal(mat::UPPER, -1.0 * param.q * param.q);

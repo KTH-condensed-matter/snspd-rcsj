@@ -58,8 +58,9 @@ namespace snspd {
         // Used when current or voltage bias is used.
         rs,
 
-        // Capacitor shunting the SNSPD. Measured in terms of
-        // Used when current or voltage bias is used.
+        // Capacitance shunting the SNSPD. Measured in units of the capacitance C.
+        // Applied by increasing the capacitance on the first node and is therefore active for all boundary conditions.
+        // Set to zero to disable.
         cs;
 
     std::vector<double>
@@ -74,9 +75,6 @@ namespace snspd {
 
         // The voltage at each site.
         v,
-
-        // The voltage time derivative at each site.
-        a,
 
         // Quasiparticle resistance in terms of the resistance R.
         // The resistance can take different values for each site.
