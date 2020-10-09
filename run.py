@@ -6,7 +6,9 @@ import os
 from pathlib import Path
 
 import h5py
+import numpy as np
 from PyInquirer import prompt
+from matplotlib import pyplot as plt
 
 import plotters
 
@@ -21,6 +23,18 @@ class PlotterCli:
                                                                                '(-v = INFO, -vv = DEBUG)')
         parser.add_argument('-l', '--logs', type=str, default='plot.log', help='set where logs should be stored')
         parser.add_argument('-i', '--input', type=str, default='data', help='directory to load data files from')
+        parser.set_defaults(func=self.interactive)
+        subparsers = parser.add_subparsers()
+
+        # Compute averages and standard deviations
+        average_parser = subparsers.add_parser('average', help='compare average voltage against some other parameter')
+        average_parser.add_argument('-p', '--parameter', type=str, default='size', help='parameter to use in compare')
+        average_parser.set_defaults(func=self.average)
+
+        # Compare different
+        average_parser = subparsers.add_parser('pulse', help='compare voltage pulses against some other parameter')
+        average_parser.add_argument('-p', '--parameter', type=str, default='size', help='parameter to use in compare')
+        average_parser.set_defaults(func=self.pulses)
 
         self.args = parser.parse_args()
 
@@ -32,7 +46,9 @@ class PlotterCli:
         file_stream.setFormatter(logging.Formatter('%(asctime)-15s %(levelname)-8s %(message)s'))
         self.logger.addHandler(file_stream)
 
-    def run(self):
+        self.args.func()
+
+    def interactive(self):
 
         plot_mode = None
 
@@ -50,6 +66,53 @@ class PlotterCli:
 
             # Call plotter with name plot_${plot_mode}
             getattr(plotters, 'plot_{}'.format(plot_mode))(file)
+
+    def average(self):
+        files = self._get_files_()
+
+        sorted_files = sorted(files, key=lambda x: self._parse_file_config_(x)['parameters'][self.args.parameter])
+
+        # Get parameter values
+        parameter = list(map(lambda x: self._parse_file_config_(x)['parameters'][self.args.parameter], sorted_files))
+
+        # Get voltages
+        voltages = list(map(lambda x: self._get_vector_data_(x, 'voltage'), sorted_files))
+
+        # Get averages
+        averages = np.mean(voltages, axis=1)
+
+        # Get standard deviation
+        std = np.std(voltages, axis=1)
+
+        plt.plot(parameter, averages, '-o', label=r'$\langle V \rangle$')
+        plt.plot(parameter, std, '-s', label=r'$\Delta V$')
+        plt.legend()
+        plt.xlabel(self.args.parameter)
+        plt.ylabel('Voltage')
+        plt.show()
+
+    def pulses(self):
+        files = self._get_files_()
+
+        sorted_files = sorted(files, key=lambda x: self._parse_file_config_(x)['parameters'][self.args.parameter])
+
+        # Get parameter values
+        parameter = list(map(lambda x: self._parse_file_config_(x)['parameters'][self.args.parameter], sorted_files))
+
+        # Get delta t
+        dt = list(map(lambda x: self._parse_file_config_(x)['parameters']['dt'], sorted_files))
+
+        # Get voltages
+        voltages = list(map(lambda x: self._get_vector_data_(x, 'voltage'), sorted_files))
+
+        for i in range(len(parameter)):
+            time = dt[i] * np.array(range(len(voltages[i])))
+            plt.plot(time, voltages[i], label='{}={}'.format(self.args.parameter, parameter[i]))
+
+        plt.legend()
+        plt.xlabel('Time')
+        plt.ylabel('Voltage')
+        plt.show()
 
     def _select_plot_mode_(self):
         question = {
@@ -112,6 +175,11 @@ class PlotterCli:
         return files
 
     @staticmethod
+    def _get_vector_data_(file, key):
+        with h5py.File(file, 'r') as data:
+            return data[key][:]
+
+    @staticmethod
     def _parse_file_config_(file):
         with h5py.File(file, 'r') as data:
             json_config = data['json_config'][()]
@@ -134,5 +202,6 @@ class PlotterCli:
         )
 
 
+
 if __name__ == '__main__':
-    PlotterCli().run()
+    PlotterCli()
