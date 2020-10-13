@@ -31,6 +31,9 @@ namespace snspd {
         // Capacitance to ground in terms of the capacitance C.
         c0,
 
+        // Resistance measured in terms of the resistance R.
+        r,
+
         // Cut-off voltage in terms of R I_c.
         // Below this voltage the resistance is given by rqp.
         // Above this voltage the resistance is given by 1 (= R / R).

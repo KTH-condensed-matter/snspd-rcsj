@@ -51,6 +51,7 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
       init_config["dt"],
       init_config["q"],
       init_config["c0"],
+      init_config["r"],
       init_config["vg"],
       init_config["nl"],
       init_config["i"],

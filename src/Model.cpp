@@ -90,7 +90,7 @@ double snspd::Model::get_resistance(const snspd::Parameters &param, std::size_t 
 
   // Return the normal resistance when the voltage is larger than vg
   if (std::abs(get_voltage(param, site)) >= param.vg) {
-    return 1.0;
+    return param.r;
   }
 
   return param.rqp.at(site);

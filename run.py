@@ -31,7 +31,7 @@ class PlotterCli:
         average_parser.add_argument('-p', '--parameter', type=str, default='size', help='parameter to use in compare')
         average_parser.set_defaults(func=self.average)
 
-        # Compare different
+        # Compare different pulses
         average_parser = subparsers.add_parser('pulse', help='compare voltage pulses against some other parameter')
         average_parser.add_argument('-p', '--parameter', type=str, default='size', help='parameter to use in compare')
         average_parser.set_defaults(func=self.pulses)
@@ -105,8 +105,13 @@ class PlotterCli:
         # Get voltages
         voltages = list(map(lambda x: self._get_vector_data_(x, 'voltage'), sorted_files))
 
+        rise = []
+
         for i in range(len(parameter)):
             time = dt[i] * np.array(range(len(voltages[i])))
+
+            rise.append(np.argmax(voltages[i] > 5e-9) * dt[i])
+
             plt.plot(time, voltages[i], label='{}={}'.format(self.args.parameter, parameter[i]))
 
         plt.legend()
