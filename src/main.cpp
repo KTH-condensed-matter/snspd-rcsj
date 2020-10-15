@@ -6,6 +6,7 @@
 #include "io/exception/FileNotFound.h"
 #include "io/Exporter.h"
 #include "bc/BoundaryConditionFactory.h"
+#include "event/EventStorage.h"
 
 static constexpr auto USAGE = R"(
 SNSPD simulation using the non-linear resistive and capacitive shunted junction model
@@ -37,11 +38,14 @@ int main(int argc, char *argv[]) {
   // Get the config parser;
   io::ConfigParser config(args);
 
+  // Get the event storage
+  event::EventStorage storage;
+
   // Get the exporter
-  io::Exporter exporter(config);
+  io::Exporter exporter(config, storage);
 
   // Get the model
-  Model model(config.get_params());
+  Model model(config.get_params(), storage);
 
   // Get the boundary conditions
   auto boundary_condition = bc::BoundaryConditionFactory::make(config);
@@ -61,14 +65,14 @@ int main(int argc, char *argv[]) {
       option::ShowRemainingTime{true}
   };
 
-  for (std::size_t i = 0; i < config.get_params().max_steps; ++i) {
+  for (unsigned int i = 0; i < config.get_params().max_steps; ++i) {
 
     // Update progress
     float progress{100 * static_cast<float>(i) / static_cast<float>(config.get_params().max_steps - 1)};
     bar.set_progress(static_cast<std::size_t>(progress));
 
     // Run averaging
-    for (std::size_t j = 0; j < config.get_params().average; ++j) {
+    for (unsigned int j = 0; j < config.get_params().average; ++j) {
       config.update_params(i);
       boundary_condition->run();
       model.run();

@@ -2,10 +2,13 @@
 
 #include <h5pp/h5pp.h>
 #include "ConfigParser.h"
+#include "../event/EventStorage.h"
 
 namespace snspd::io {
   class Exporter {
     ConfigParser &m_config;
+
+    event::EventStorage &m_storage;
 
     std::vector<double>
         m_v,
@@ -16,8 +19,9 @@ namespace snspd::io {
 
   public:
 
-    explicit Exporter(ConfigParser &config):
+    explicit Exporter(ConfigParser &config, event::EventStorage &storage):
         m_config(config),
+        m_storage(storage),
         m_v(config.get_params().max_steps, 0.0),
         m_ib(config.get_params().max_steps, 0.0),
         m_t(config.get_params().max_steps, 0.0),

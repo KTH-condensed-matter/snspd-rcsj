@@ -9,13 +9,13 @@ namespace snspd {
   struct Parameters {
 
     // The current parameter step
-    unsigned long step{0};
+    unsigned int step{0};
 
-    unsigned long max_steps;
+    unsigned int max_steps;
 
-    unsigned long average{1};
+    unsigned int average{1};
 
-    unsigned long time_step{0};
+    unsigned int time_step{0};
 
     // The number of segments.
     std::size_t size;

@@ -43,7 +43,7 @@ namespace snspd::io {
       return m_param;
     };
 
-    void update_params(std::size_t step);
+    void update_params(unsigned int step);
 
     [[nodiscard]] const Settings& get_settings() const {
       return m_settings;

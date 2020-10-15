@@ -24,6 +24,20 @@ void snspd::Model::run() {
   // Update the voltage and phase
   m_param.v += res;
   m_param.x += m_param.v * (m_param.dt / 2);
+
+  auto new_branch = get_branch(m_param.x);
+
+  // Check for phase slips
+  for (std::size_t i = 0; i < m_param.size - 1; ++i) {
+    if (m_branch.at(i) != new_branch.at(i)) {
+
+      // Save phase slip events
+      m_storage.save_phase_slip(m_param.time_step, i, new_branch.at(i));
+
+      // Update the branch
+      m_branch.at(i) = new_branch.at(i);
+    }
+  }
 }
 
 std::vector<double> snspd::Model::generate_rnd_vector(double amplitude, std::size_t length) {
@@ -141,4 +155,14 @@ std::vector<double> snspd::Model::get_force_damping(const snspd::Parameters &par
   }
 
   return force;
+}
+
+std::vector<long int> snspd::Model::get_branch(const std::vector<double> &x) {
+  std::vector<long int> branch(x.size() - 1);
+
+  for (std::size_t i = 0; i < x.size() - 1; ++i) {
+    branch.at(i) = static_cast<long int>(std::floor(((x.at(i + 1) - x.at(i)) + M_PI) / (2 * M_PI)));
+  }
+
+  return branch;
 }

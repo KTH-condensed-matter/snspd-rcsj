@@ -44,8 +44,8 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
   spdlog::debug("Creating parameter struct.");
   Parameters params {
       0,
-      init_config["maxSteps"].get<unsigned long>(),
-      init_config["average"].get<unsigned long>(),
+      init_config["maxSteps"].get<unsigned int>(),
+      init_config["average"].get<unsigned int>(),
       0,
       size,
       init_config["dt"],
@@ -186,7 +186,7 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const std::string 
   return out;
 }
 
-void snspd::io::ConfigParser::update_params(std::size_t step) {
+void snspd::io::ConfigParser::update_params(unsigned int step) {
 
   // Update the step
   m_param.step = step;
@@ -254,11 +254,39 @@ void snspd::io::ConfigParser::update_vector(const std::string &name, std::vector
     auto end = (*result)["end"].get<std::size_t>();
 
     for (const auto &update : (*result)["values"][name]) {
-      auto index = update["index"].get<std::size_t>();
       auto from = update["from"].get<double>();
       auto to = update["to"].get<double>();
 
-      vec.at(index) = (to - from) * (static_cast<double>(step - start)) / static_cast<double>(end - start) + from;
+      // If index is a list
+      if (update.contains("index") && update["index"].is_array()) {
+
+        for (const auto &element : update["index"]) {
+          auto index = element.get<std::size_t>();
+          vec.at(index) = (to - from) * (static_cast<double>(step - start)) / static_cast<double>(end - start) + from;
+        }
+
+        continue;
+      }
+
+      // If index is not a list
+      if (update.contains("index")) {
+        auto index = update["index"].get<std::size_t>();
+        vec.at(index) = (to - from) * (static_cast<double>(step - start)) / static_cast<double>(end - start) + from;
+        continue;
+      }
+
+      // If a range is specified
+      if (update.contains("range") && update["range"].is_array() && update["range"].size() == 2) {
+
+        for (auto i = update["range"].at(0).get<std::size_t>();
+             i < update["range"].at(1).get<std::size_t>() + 1; ++i) {
+          vec.at(i) = (to - from) * (static_cast<double>(step - start)) / static_cast<double>(end - start) + from;
+        }
+
+        continue;
+      }
+
+      spdlog::warn("No index or range specified in {}. Skipping update.", name);
     }
   }
 }

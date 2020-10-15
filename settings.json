@@ -1,13 +1,13 @@
 {
   "settings": {
-    "output": "data/detection/{:%Y-%m-%d_%H%M%S}.h5"
+    "output": "data/phase_slip/{:%Y-%m-%d_%H%M%S}.h5"
   },
   "parameters": {
     "boundaryCondition": "voltage",
-    "maxSteps": 1e6,
+    "maxSteps": 1e7,
     "average": 1,
     "size": 400,
-    "dt": 0.1,
+    "dt": 0.01,
     "q": 1.1107,
     "c0": 0.01,
     "vg": 1,
@@ -30,21 +30,21 @@
   },
   "updates": [{
     "start": 100000,
-    "end": 100100,
+    "end": 101000,
     "values": {
       "ic": [{
         "index": 100,
         "from": 1.0,
-        "to": 0.5
+        "to": 0.0
       }]
     }
   }, {
-    "start": 200000,
-    "end": 200100,
+    "start": 2000000,
+    "end": 2000100,
     "values": {
       "ic": [{
         "index": 100,
-        "from": 0.5,
+        "from": 0.0,
         "to": 1.0
       }]
     }
