@@ -1,0 +1,105 @@
+{
+
+  // General settings
+  "settings": {
+
+    // Specify where the data file is saved
+    "output": "data/test/{:%Y-%m-%d_%H%M%S}.h5"
+  },
+
+
+  "parameters": {
+
+    // Run in voltage biased mode
+    "boundaryCondition": "voltage",
+
+    // Number of time steps to run the simulation
+    "maxSteps": 1e6,
+
+    // How many time steps to average over (=1 means no averaging)
+    "average": 1,
+
+    // Size of the system
+    "size": 400,
+
+    // Time step
+    "dt": 0.01,
+
+    // Quality factor (\sqrt(\beta))
+    "q": 1.1107,
+
+    // Capacitance to ground per segment
+    "c0": 0.01,
+
+    // Voltage gap
+    "vg": 1,
+
+    // Noise level (i.e. temperature)
+    "nl": 0.0,
+
+    // Resistance per segment
+    "r": 1,
+
+    // Initial current
+    "i": 0.8,
+
+    // Not used when boundary condition is voltage bias
+    "ib": 0,
+
+    // Voltage bias
+    "vb": 160,
+
+    // Resistance in series with the SNSPD (R_term in RCSJ repo)
+    "rt": 200,
+
+    // Shunt resistance
+    "rs": 0.125,
+
+    // Shunt capacitance (C_shunt in RCSJ repo)
+    "cs": 2000,
+
+    // i_c
+    "ic": 1,
+
+    // Phase
+    "x": {
+
+      // Start in a stationary state. The phase at site n is given by
+      // x_n = arcsin(min(1, i)) * (N - n),
+      // where N is the number of sites.
+      "stationaryPhase": true
+    },
+
+    // The voltage for each site
+    "v": 0,
+
+    // Quasiparticle resistance
+    "rqp": 1000
+  },
+
+
+  // Updates of the parameters during the simulation:
+  // - Set i_c at site 200 to 0 after 1e5 time steps.
+  // - Set i_c at site 200 to 1 after 2e5 time steps.
+  "updates": [{
+    "start": 100000,
+    "end": 100001,
+    "values": {
+      "ic": [{
+        "index": 200,
+        "from": 1,
+        "to": 0
+      }]
+    }
+  }, {
+    "start": 200000,
+    "end": 200001,
+    "values": {
+      "ic": [{
+        "index": 200,
+        "from": 0,
+        "to": 1
+      }]
+    }
+  }]
+}

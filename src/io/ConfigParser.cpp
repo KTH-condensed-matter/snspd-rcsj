@@ -148,7 +148,7 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const std::string 
       spdlog::debug("Setting {} to a stationary phase.", name);
 
       std::size_t multiplier{size};
-      double arcsin_ratio{std::asin(std::min(inital_config["ib"].get<double>(), 1.0))};
+      double arcsin_ratio{std::asin(std::min(inital_config["i"].get<double>(), 1.0))};
 
       std::generate(out.begin(), out.end(), [&]() {
         return static_cast<double>(multiplier--) * arcsin_ratio;
