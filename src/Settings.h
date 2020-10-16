@@ -4,6 +4,7 @@
 
 namespace snspd {
   struct Settings {
-    const std::string output;
+    std::string output;
+    bool silent;
   };
 }

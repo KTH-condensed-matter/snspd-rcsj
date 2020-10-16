@@ -3,7 +3,6 @@
 #include <indicators/progress_bar.hpp>
 #include "Model.h"
 #include "io/ConfigParser.h"
-#include "io/exception/FileNotFound.h"
 #include "io/Exporter.h"
 #include "bc/BoundaryConditionFactory.h"
 #include "event/EventStorage.h"
@@ -18,6 +17,7 @@ Options:
   -h, --help              Show the help screen.
   -V, --version           Display the version.
   -v, --verbose           Run program in verbose mode.
+  -s, --silent            Run program in silent mode (without progress bar).
   -c, --config=<CONFIG>   Path to the JSON config file [default: settings.json].
   -o, --output=<OUTPUT>   HDF5 file to store output data.
 )";
@@ -67,9 +67,13 @@ int main(int argc, char *argv[]) {
 
   for (unsigned int i = 0; i < config.get_params().max_steps; ++i) {
 
-    // Update progress
-    float progress{100 * static_cast<float>(i) / static_cast<float>(config.get_params().max_steps - 1)};
-    bar.set_progress(static_cast<std::size_t>(progress));
+    // Check if progress bar is enabled
+    if (!config.get_settings().silent) {
+
+      // Update progress
+      float progress{100 * static_cast<float>(i) / static_cast<float>(config.get_params().max_steps - 1)};
+      bar.set_progress(static_cast<std::size_t>(progress));
+    }
 
     // Run averaging
     for (unsigned int j = 0; j < config.get_params().average; ++j) {

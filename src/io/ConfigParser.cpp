@@ -71,6 +71,10 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
 
 snspd::Settings
 snspd::io::ConfigParser::init_settings(const nlohmann::json &config, const std::map<std::string, docopt::value> &args) {
+
+  bool silent = args.at("--silent").asBool() || (config.contains("settings")
+      && config["settings"].contains("silent") && config["settings"]["silent"].get<bool>());
+
   std::string output;
 
   // Check if the output is given as a CLI param
@@ -93,7 +97,8 @@ snspd::io::ConfigParser::init_settings(const nlohmann::json &config, const std::
   tm local_tm = *localtime(&tt);
 
   Settings settings {
-      fmt::format(output, local_tm)
+      fmt::format(output, local_tm),
+      silent
   };
 
   return settings;
