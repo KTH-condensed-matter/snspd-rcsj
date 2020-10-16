@@ -2,12 +2,12 @@ name: CMake
 
 on:
   push:
-    branches: 
+    branches:
       - master
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+  CC: /usr/bin/gcc-9
+  CXX: /usr/bin/g++-9
 
 jobs:
   build:
@@ -24,11 +24,13 @@ jobs:
       with:
         python-version: '3.x'
         architecture: 'x64'
-    
+
+    - name: Install GNU compiler
+      run: sudo apt-get install -y gcc-9 g++-9
+
     - name: Install Conan
       run: pip install conan
 
     - name: Build
       shell: bash
-      # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: ./build.sh      
+      run: ./build.sh
