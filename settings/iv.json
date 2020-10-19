@@ -4,10 +4,10 @@
   },
   "parameters": {
     "boundaryCondition": "current",
-    "maxSteps": 20000,
+    "maxSteps": 2000,
     "average": 100000,
     "size": 400,
-    "dt": 1,
+    "dt": 10,
     "q": 1.1107,
     "c0": 0.01,
     "vg": 1,

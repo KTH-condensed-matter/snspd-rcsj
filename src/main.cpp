@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   io::ConfigParser config(args);
 
   // Get the event storage
-  event::EventStorage storage;
+  event::EventStorage storage(config.get_settings());
 
   // Get the exporter
   io::Exporter exporter(config, storage);
