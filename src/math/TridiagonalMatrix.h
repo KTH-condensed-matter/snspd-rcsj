@@ -54,7 +54,7 @@ namespace snspd::math {
     }
 
     // Get one of the diagonals
-    std::vector<T> &get_diagonal(const int diag) {
+    const std::vector<T> &get_diagonal(int diag) const {
       switch (diag) {
         case DIAG:
           return m_diagonal;
@@ -70,8 +70,13 @@ namespace snspd::math {
       }
     }
 
+    // Get one of the diagonals (non-const version)
+    std::vector<T> &get_diagonal(int diag) {
+      return const_cast<std::vector<T>&>(const_cast<const TridiagonalMatrix<T>*>(this)->get_diagonal(diag));
+    }
+
     // Set one diagonal
-    void set_diagonal(const int diag, std::vector<T> value) {
+    void set_diagonal(int diag, std::vector<T> value) {
       std::vector<T> &diagonal = get_diagonal(diag);
 
       // Make sure that the length of the new diagonal is the same as the old one
@@ -83,20 +88,20 @@ namespace snspd::math {
     }
 
     // Fill one of the diagonals with the same value
-    void fill_diagonal(const int diag, T value) {
+    void fill_diagonal(int diag, T value) {
       std::vector<T> &diagonal = get_diagonal(diag);
 
       std::fill(diagonal.begin(), diagonal.end(), value);
     }
 
     // Get one component of the matrix
-    [[nodiscard]] T get(const int diag, const std::size_t index) const {
+    [[nodiscard]] T get(int diag, std::size_t index) const {
       std::vector<T> &diagonal = get_diagonal(diag);
       return diagonal.at(index);
     }
 
     // Set one component of the matrix
-    void set(const int diag, const std::size_t index, T value) {
+    void set(int diag, std::size_t index, T value) {
       std::vector<T> &diagonal = get_diagonal(diag);
       diagonal.at(index) = value;
     }

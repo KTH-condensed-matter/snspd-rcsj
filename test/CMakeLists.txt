@@ -13,10 +13,12 @@ target_link_libraries(catch_main PUBLIC CONAN_PKG::catch2)
 
 file(GLOB_RECURSE TEST_SOURCES "*.cpp")
 
-add_executable(tests ${TEST_SOURCES})
-target_link_libraries(tests PRIVATE project_warnings project_options
-        catch_main)
+# Add project sources except for main.cpp
+file(GLOB_RECURSE PROJECT_SOURCES "../src/*.cpp")
+list(REMOVE_ITEM PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../src/main.cpp")
 
+add_executable(tests ${TEST_SOURCES} ${PROJECT_SOURCES})
+target_link_libraries(tests PRIVATE project_warnings project_options catch_main ${CONAN_TARGETS})
 
 # automatically discover tests that are defined in catch based test files you
 # can modify the unittests. TEST_PREFIX to whatever you want, or use different

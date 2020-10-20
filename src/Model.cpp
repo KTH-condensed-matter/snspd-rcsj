@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <cmath>
 #include "Model.h"
-
 #include "math/TridiagonalLuMatrix.h"
 #include "math/VectorOperations.h"
 
@@ -29,6 +28,7 @@ void snspd::Model::run() {
 
   // Check for phase slips
   for (std::size_t i = 0; i < m_param.size - 1; ++i) {
+
     if (m_branch.at(i) != new_branch.at(i)) {
 
       // Save phase slip events
@@ -77,25 +77,25 @@ snspd::math::TridiagonalMatrix<double> snspd::Model::generate_alpha_matrix(const
   double backward_res;
 
   // Update first row
-  alpha.set(mat::DIAG, 0, forward_res);
-  alpha.set(mat::UPPER, 0, -forward_res);
+  alpha.set(mat::DIAG, 0, 1.0 / forward_res);
+  alpha.set(mat::UPPER, 0, -1.0 / forward_res);
 
   // Update row i
   for (std::size_t i = 1; i < param.size - 1; ++i) {
     backward_res = forward_res;
     forward_res = get_resistance(param, i);
 
-    alpha.set(mat::DIAG, i, backward_res + forward_res);
-    alpha.set(mat::UPPER, i, -forward_res);
-    alpha.set(mat::LOWER, i - 1, -backward_res);
+    alpha.set(mat::DIAG, i, 1.0 / backward_res + 1.0 / forward_res);
+    alpha.set(mat::UPPER, i, -1.0 / forward_res);
+    alpha.set(mat::LOWER, i - 1, -1.0 / backward_res);
   }
 
   // Update last row
   backward_res = forward_res;
   forward_res = get_resistance(param, param.size - 1);
 
-  alpha.set(mat::DIAG, param.size - 1, forward_res + backward_res);
-  alpha.set(mat::LOWER, param.size - 2, -backward_res);
+  alpha.set(mat::DIAG, param.size - 1, 1.0 / forward_res + 1.0 / backward_res);
+  alpha.set(mat::LOWER, param.size - 2, -1.0 / backward_res);
 
   return alpha;
 }

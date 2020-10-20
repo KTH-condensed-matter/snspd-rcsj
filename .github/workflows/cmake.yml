@@ -24,11 +24,14 @@ jobs:
       with:
         python-version: '3.x'
         architecture: 'x64'
+
+
     # Enable cache of ~/.conan
-    - uses: actions/cache@v2
+    - name: Cache conan
+      uses: actions/cache@v2
       with:
         path: ~/.conan
-        key: ${{ runner.os }}-build-conan-${{ hashFiles('conanfile.txt') }}
+        key: ${{ runner.os }}-build-conan-${{ hashFiles('**/conanfile.txt') }}
         restore-keys: |
           ${{ runner.os }}-build-conan-
 
