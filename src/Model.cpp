@@ -135,7 +135,7 @@ std::vector<double> snspd::Model::get_force_damping(const snspd::Parameters &par
 
   // Compensate noise with the resistance
   for (std::size_t i = 0; i < rnd.size(); ++i) {
-    rnd.at(i) *= std::sqrt(get_resistance(param, i));
+    rnd.at(i) /= std::sqrt(get_resistance(param, i));
   }
 
   // The difference between terms is the noise

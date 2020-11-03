@@ -74,11 +74,11 @@ snspd::io::ConfigParser::init_settings(const nlohmann::json &config, const std::
 
   // Silent mode
   bool silent = args.at("--silent").asBool() || (config.contains("settings")
-      && config["settings"].contains("silent") && config["settings"]["silent"].get<bool>());
+                                                 && config["settings"].contains("silent") && config["settings"]["silent"].get<bool>());
 
   // Save phase slips
   bool save_phase_slips = config.contains("settings") && config["settings"].contains("savePhaseSlips")
-      && config["settings"]["savePhaseSlips"].get<bool>();
+                          && config["settings"]["savePhaseSlips"].get<bool>();
 
   std::string output;
 
@@ -137,7 +137,7 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const std::string 
     out = vec.get<std::vector<double>>();
   }
 
-    // Use the options to fill the array
+  // Use the options to fill the array
   else if (vec.is_object()) {
 
     // Value is set
@@ -148,7 +148,7 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const std::string 
       std::fill(out.begin(), out.end(), vec["value"].get<double>());
     }
 
-      // If it has stationaryPhase set to true than fill with vector that makes the phases stationary
+    // If it has stationaryPhase set to true than fill with vector that makes the phases stationary
     else if (vec.contains("stationaryPhase") && vec["stationaryPhase"].get<bool>() && name == "x") {
 
       spdlog::debug("Setting {} to a stationary phase.", name);
@@ -161,7 +161,7 @@ std::vector<double> snspd::io::ConfigParser::get_param_vector(const std::string 
       });
     }
 
-      // If it has random set to true then fill with random values between min and max
+    // If it has random set to true then fill with random values between min and max
     else if (vec.contains("random") && vec["random"].get<bool>()) {
 
       spdlog::debug("Setting {} to uniform random values in the interval [{}, {}],", name,

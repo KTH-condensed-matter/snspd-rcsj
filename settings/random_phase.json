@@ -1,0 +1,33 @@
+{
+  "settings": {
+    "output": "data/random_phase/{:%Y-%m-%d_%H%M%S}.h5"
+  },
+  "parameters": {
+    "boundaryCondition": "voltage",
+    "maxSteps": 1e7,
+    "average": 1,
+    "size": 400,
+    "dt": 0.01,
+    "q": 1.1107,
+    "c0": 0.01,
+    "vg": 1,
+    "nl": 0.0058,
+    "r": 1,
+    "i": 0.5,
+    "ib": 0.5,
+    "vb": 100,
+    "rt": 200,
+    "rs": 0.125,
+    "cs": 2000,
+    "ic": 1,
+    "x": {
+      "stationaryPhase": true,
+      "random": false,
+      "min": 0,
+      "max": 6.28
+    },
+    "v": 0,
+    "rqp": 1000
+  },
+  "updates": []
+}
