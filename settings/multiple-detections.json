@@ -1,6 +1,6 @@
 {
   "settings": {
-    "output": "data/detection/{:%Y-%m-%d_%H%M%S}.h5",
+    "output": "data/multiple-detection/{:%Y-%m-%d_%H%M%S}.h5",
     "savePhaseSlips": true
   },
   "parameters": {
@@ -34,9 +34,9 @@
     "end": 100100,
     "values": {
       "ic": [{
-        "index": 200,
+        "index": [200, 201],
         "from": 1,
-        "to": 0.4
+        "to": 0.1
       }]
     }
   }, {
@@ -44,8 +44,8 @@
     "end": 100200,
     "values": {
       "ic": [{
-        "index": 200,
-        "from": 0.4,
+        "index": [200, 201],
+        "from": 0.1,
         "to": 1
       }]
     }

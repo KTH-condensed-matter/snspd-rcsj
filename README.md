@@ -1,21 +1,13 @@
 # snspd-rcsj
 
-A one-dimensional SNSPD model.
-
-## Requirements
-
-The following is needed to run the project.
-
-- g++ (tested with 9.3.0)
-- CMake 3.12 or later
-- Conan
+A one-dimensional SNSPD model using the resistively and capacitively shunted Josephson junction model.
 
 ## Installation
 
 The easiest way to get started is to download the binary from github using
 
 ```shell script
-wget https://github.com/afsa/snspd-rcsj/releases/latest/download/release.zip
+wget https://github.com/KTH-condensed-matter/snspd-rcsj/releases/latest/download/release.zip
 unzip release.zip
 ```
 
@@ -27,10 +19,16 @@ To start the simulation then run
 
 ### Build from source
 
+The following is needed to run the project.
+
+- g++ (tested with 9.3.0)
+- CMake 3.12 or later
+- Conan
+
 The easiest way to build the project is cloning and running the build script
 
 ```shell script
-git clone git@github.com:afsa/snspd-rcsj.git
+git clone git@github.com:KTH-condensed-matter/snspd-rcsj.git
 ./build.sh
 ```
 
@@ -93,7 +91,7 @@ options are
     // The HDF5 file to write the output to. The file may contain a fmt format placeholder for the date.
     "output": "data/iv/{:%Y-%m-%d_%H%M%S}.h5",
     
-    // If phase slips should be saved
+    // If phase slips should be saved.
     "savePhaseSlips": true
   },
 
@@ -153,10 +151,10 @@ options are
     // Shunt capacitance.
     "cs": 0,
 
-    // Critical current. 
+    // Critical current (space dependent). 
     "ic": 1,
 
-    // Phase.
+    // Phase (space dependent).
     "x": {
       
       // Set the phase to be stationary at the start of the simulation.
@@ -168,10 +166,10 @@ options are
       "max": 6.28
     },
     
-    // Voltage.
+    // Voltage (space dependent).
     "v": 0,
 
-    // Quasiparticle resistance.
+    // Quasiparticle resistance (space dependent).
     "rqp": 1000
   },
 
@@ -184,25 +182,52 @@ options are
     // End update at step 1000.
     "end": 1000,
 
-    // Update the values below. The updates use linear interpolation.
+    // Update the values below. The updates use linear interpolation between "from" and "to" values.
     "values": {
-      "ib": {
-        "from": 0,
-        "to": 5
-      }
-    }
-  }, 
 
-  // Another update.
-  {
-    "start": 1001,
-    "end": 2000,
-    "values": {
       "ib": {
-        "from": 5,
-        "to": 0
-      }
+        
+        // Value before update.
+        "from": 0, 
+        
+        // Value after update.
+        "to": 1
+      },
+
+      "ic": {
+          
+        // The site to update (only for space dependent properties).
+        "index": [100, 200],
+        "from": 1,
+        "to": 0.5
+      },
+
+      "x": {
+        
+        // Sites can also be selected with a range (only for space dependent properties).
+        "range": [10, 20],
+        "from": 0,
+        "to": 10
+      }     
     }
   }]
 }
 ```
+
+## Output
+
+Simulation data is stored in the HDF5 format and can be read using for example 
+[Python](https://docs.h5py.org/en/latest/quick.html) or [Matlab](https://se.mathworks.com/help/matlab/ref/h5read.html). 
+Another good tool to quickly go through the data is HDF Compass which can be installed on Debian/Ubuntu using
+
+```shell script
+sudo apt install hdf-compass
+```
+
+The saved data is structured with HDF5 datasets as follows:
+
+- `bias_current` - Contains the bias current going into the SNSPD every step.
+- `voltage` - The voltage over the SNSPD.
+- `time` - The time in dimensionless units since the start of the simulation.
+- `phase_slips` - Information where phase slips occur.
+- `json_config` - The configuration file used to run the simulation.
