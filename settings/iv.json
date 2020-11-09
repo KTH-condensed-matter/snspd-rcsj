@@ -4,7 +4,7 @@
   },
   "parameters": {
     "boundaryCondition": "simple",
-    "maxSteps": 200,
+    "maxSteps": 2000,
     "average": 10000,
     "size": 400,
     "dt": 1,
@@ -28,19 +28,19 @@
   },
   "updates": [{
     "start": 0,
-    "end": 200,
+    "end": 1000,
     "values": {
       "ib": {
         "from": 0,
-        "to": 10
+        "to": 5
       }
     }
   }, {
     "start": 1001,
     "end": 2000,
     "values": {
-      "vb": {
-        "from": 10,
+      "ib": {
+        "from": 5,
         "to": 0
       }
     }

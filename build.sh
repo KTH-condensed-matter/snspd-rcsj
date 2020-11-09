@@ -1,9 +1,5 @@
 #!/usr/bin/env sh
 
-# Set c++ version to 17
-conan profile new default --detect
-conan profile update settings.compiler.cppstd=17 default
-
 # Configure CMake
 cmake -DCMAKE_BUILD_TYPE=Release \
       -DENABLE_COVERAGE:BOOL=False \

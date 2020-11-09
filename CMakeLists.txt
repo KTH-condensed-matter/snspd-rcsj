@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 # Set the project name
-project(snspd_rcsj CXX)
+project(snspd-rcsj CXX)
 include(cmake/StandardProjectSettings.cmake)
 
 # Link this 'library' to set the c++ standard / compile-time options requested

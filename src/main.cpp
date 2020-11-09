@@ -11,7 +11,7 @@ static constexpr auto USAGE = R"(
 SNSPD simulation using the non-linear resistive and capacitive shunted junction model
 
 Usage:
-  snspd [options]
+  snspd-rcsj [options]
 
 Options:
   -h, --help              Show the help screen.

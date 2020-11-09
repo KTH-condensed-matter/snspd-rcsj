@@ -16,6 +16,7 @@ macro(run_conan)
 
     conan_cmake_run(
             CONANFILE conanfile.txt
+            SETTINGS compiler.cppstd=17 # Set the cppstd version to 17. Needed by h5pp.
             BASIC_SETUP
             CMAKE_TARGETS # individual targets to link to
             BUILD

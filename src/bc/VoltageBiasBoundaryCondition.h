@@ -21,7 +21,8 @@ namespace snspd::bc {
     void run() override {
 
       // Compute the stochastic term
-      auto noise = m_param.nl * std::sqrt(m_param.dt * (m_param.rs + m_param.rt)) * m_rnd_dist(m_rnd_gen);
+      auto noise = std::sqrt(2 * m_param.nl * (1 / m_param.rs + 1 / m_param.rt) / m_param.dt)
+          * m_rnd_dist(m_rnd_gen);
 
       m_param.i = m_param.vb / m_param.rt - m_param.v.at(0) * (1 / m_param.rs + 1 / m_param.rt) - noise;
     }

@@ -207,6 +207,5 @@ class PlotterCli:
         )
 
 
-
 if __name__ == '__main__':
     PlotterCli()

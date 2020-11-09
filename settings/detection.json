@@ -1,10 +1,11 @@
 {
   "settings": {
-    "output": "data/detection/{:%Y-%m-%d_%H%M%S}.h5"
+    "output": "data/detection/{:%Y-%m-%d_%H%M%S}.h5",
+    "savePhaseSlips": true
   },
   "parameters": {
     "boundaryCondition": "voltage",
-    "maxSteps": 1e6,
+    "maxSteps": 2e6,
     "average": 1,
     "size": 400,
     "dt": 0.01,
@@ -29,7 +30,7 @@
     "rqp": 1000
   },
   "updates": [{
-    "start": 100100,
+    "start": 100000,
     "end": 100100,
     "values": {
       "ic": [{
@@ -39,8 +40,8 @@
       }]
     }
   }, {
-    "start": 200000,
-    "end": 200100,
+    "start": 100100,
+    "end": 100200,
     "values": {
       "ic": [{
         "index": 200,
