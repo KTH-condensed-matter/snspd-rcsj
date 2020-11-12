@@ -10,7 +10,7 @@ tests_*.cmake
 Makefile
 conan*
 graph_info.json
-snspd_rcsj.cbp
+*.cbp
 compile_commands.json
 CMakeCache.txt
 
