@@ -1,0 +1,54 @@
+{
+  "settings": {
+    "output": "data/bias-tee/{:%Y-%m-%d_%H%M%S}.h5",
+    "savePhaseSlips": true
+  },
+  "parameters": {
+    "boundaryCondition": "bias-tee",
+    "maxSteps": 2e6,
+    "average": 1,
+    "size": 400,
+    "dt": 0.01,
+    "q": 1.1107,
+    "c0": 0.01,
+    "vg": 1,
+    "nl": 0.00058,
+    "r": 1,
+    "i": 0.8,
+    "ib": 0.8,
+    "vb": 160,
+    "rt": 200,
+    "rs": 0.125,
+    "cs": 2000,
+    "lb": 1,
+    "cb": 1,
+    "ir": 0,
+    "ic": 1,
+    "x": {
+      "stationaryPhase": true
+    },
+    "v": 0,
+    "rqp": 1000
+  },
+  "updates": [{
+    "start": 100000,
+    "end": 100100,
+    "values": {
+      "ic": [{
+        "index": 200,
+        "from": 1,
+        "to": 0.4
+      }]
+    }
+  }, {
+    "start": 100100,
+    "end": 100200,
+    "values": {
+      "ic": [{
+        "index": 200,
+        "from": 0.4,
+        "to": 1
+      }]
+    }
+  }]
+}

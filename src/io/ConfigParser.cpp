@@ -60,6 +60,9 @@ snspd::Parameters snspd::io::ConfigParser::init_params(const nlohmann::json &con
       init_config["rt"],
       init_config["rs"],
       init_config["cs"],
+      init_config["lb"],
+      init_config["cb"],
+      init_config["ir"],
       get_param_vector("ic", config),
       get_param_vector("x", config),
       get_param_vector("v", config),
@@ -73,12 +76,15 @@ snspd::Settings
 snspd::io::ConfigParser::init_settings(const nlohmann::json &config, const std::map<std::string, docopt::value> &args) {
 
   // Silent mode
-  bool silent = args.at("--silent").asBool() || (config.contains("settings")
-                                                 && config["settings"].contains("silent") && config["settings"]["silent"].get<bool>());
+  bool silent = args.at("--silent").asBool()
+      || (config.contains("settings")
+      && config["settings"].contains("silent")
+      && config["settings"]["silent"].get<bool>());
 
   // Save phase slips
-  bool save_phase_slips = config.contains("settings") && config["settings"].contains("savePhaseSlips")
-                          && config["settings"]["savePhaseSlips"].get<bool>();
+  bool save_phase_slips = config.contains("settings")
+      && config["settings"].contains("savePhaseSlips")
+      && config["settings"]["savePhaseSlips"].get<bool>();
 
   std::string output;
 

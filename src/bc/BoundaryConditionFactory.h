@@ -8,6 +8,7 @@
 #include "CurrentBiasBoundaryCondition.h"
 #include "VoltageBiasBoundaryCondition.h"
 #include "../io/ConfigParser.h"
+#include "BiasTeeBoundaryCondition.h"
 
 namespace snspd::bc {
   class BoundaryConditionFactory {
@@ -39,6 +40,11 @@ namespace snspd::bc {
       if (boundary_condition == "voltage") {
         spdlog::debug("Using voltage bias boundary condition.");
         return std::make_unique<VoltageBiasBoundaryCondition>(parser.get_params());
+      }
+
+      if (boundary_condition == "bias-tee") {
+        spdlog::debug("Using bias-tee boundary condition.");
+        return std::make_unique<BiasTeeBoundaryCondition>(parser.get_params());
       }
 
       throw UnknownBoundaryCondition();

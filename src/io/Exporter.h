@@ -12,7 +12,9 @@ namespace snspd::io {
 
     std::vector<double>
         m_v,
+        m_i,
         m_ib,
+        m_ir,
         m_t;
 
     h5pp::File m_file;
@@ -23,7 +25,9 @@ namespace snspd::io {
         m_config(config),
         m_storage(storage),
         m_v(config.get_params().max_steps, 0.0),
+        m_i(config.get_params().max_steps, 0.0),
         m_ib(config.get_params().max_steps, 0.0),
+        m_ir(config.get_params().max_steps, 0.0),
         m_t(config.get_params().max_steps, 0.0),
         m_file(config.get_settings().output) {
 

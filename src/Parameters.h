@@ -64,7 +64,13 @@ namespace snspd {
         // Capacitance shunting the SNSPD. Measured in units of the capacitance C.
         // Applied by increasing the capacitance on the first node and is therefore active for all boundary conditions.
         // Set to zero to disable.
-        cs;
+        cs,
+
+        lb,
+
+        cb,
+
+        ir;
 
     std::vector<double>
 
