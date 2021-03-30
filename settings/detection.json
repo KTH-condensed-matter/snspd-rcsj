@@ -5,7 +5,7 @@
   },
   "parameters": {
     "boundaryCondition": "voltage",
-    "maxSteps": 2e6,
+    "maxSteps": 5e6,
     "average": 1,
     "size": 400,
     "dt": 0.01,
@@ -30,22 +30,22 @@
     "rqp": 1000
   },
   "updates": [{
-    "start": 100000,
-    "end": 100100,
+    "start": 1000000,
+    "end": 1000100,
     "values": {
       "ic": [{
         "index": 200,
         "from": 1,
-        "to": 0.4
+        "to": 0.1
       }]
     }
   }, {
-    "start": 100100,
-    "end": 100200,
+    "start": 1000100,
+    "end": 1000200,
     "values": {
       "ic": [{
         "index": 200,
-        "from": 0.4,
+        "from": 0.1,
         "to": 1
       }]
     }

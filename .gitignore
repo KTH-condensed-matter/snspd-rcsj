@@ -22,6 +22,7 @@ CMakeCache.txt
 # Datafiles
 *.h5
 /data/*.h5
+/experimental-data
 
 # Python environment and cache
 /venv
